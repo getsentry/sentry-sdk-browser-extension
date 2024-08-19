@@ -1,17 +1,17 @@
-import { Options, SdkMetadata } from "@sentry/types";
+import { Options, SdkMetadata } from '@sentry/types';
 
 export interface MessageFromBackground {
-    fromBackground: true;
+	fromBackground: true;
 }
 
 export interface ClientMessage {
-    type: 'CLIENT';
-    sdkMetadata: SdkMetadata;
-    options: Options;
-} 
+	type: 'CLIENT';
+	sdkMetadata: SdkMetadata;
+	options: Options;
+}
 
 export interface RequestUpdatesMessage {
-    type: 'REQUEST_UPDATES';
+	type: 'REQUEST_UPDATES';
 }
 
 export type MessageData = ClientMessage | RequestUpdatesMessage;

@@ -1,78 +1,84 @@
 /* RESET CSS */
 html {
-    box-sizing: border-box;
+	box-sizing: border-box;
 
-    --primary-color: #362d59;
-    --secondary-color: #e1567c;
-  }
-  
-  *, *::before, *::after {
-    box-sizing: inherit;
-  }
-  
-  * {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: 0;
-  }
+	--primary-color: #362d59;
+	--secondary-color: #e1567c;
+}
 
-  body {
-    font-family: Roboto, Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-    color: #333;
-    background-color: #f4f4f4;
-  }
+*,
+*::before,
+*::after {
+	box-sizing: inherit;
+}
 
-  ul {
-    padding-left: 1em;
-  }
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+}
 
-  header {
-    background-color: var(--primary-color);
-    color: #fff;
-    display: flex;
-    padding: 0 1em;
-    gap: 1em;
-    align-items: center;
-    margin-bottom: 1em;
-  }
+body {
+	font-family: Roboto, Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	line-height: 1.5;
+	color: #333;
+	background-color: #f4f4f4;
+}
 
-  .header-logo {
-    height: 3em;
-    width: auto;
-    display: block;
-    flex-grow: 0;
-  }
+ul {
+	padding-left: 1em;
+}
 
-  .header-logo > img {
-    height: 100%;
-    width: auto;
-  }
+main {
+	padding: 1em;
+}
+
+header {
+	background-color: var(--primary-color);
+	color: #fff;
+	display: flex;
+	padding: 0 1em;
+	gap: 1em;
+	align-items: center;
+}
+
+.header-logo {
+	height: 3em;
+	width: auto;
+	display: block;
+	flex-grow: 0;
+}
+
+.header-logo > img {
+	height: 100%;
+	width: auto;
+}
 
 nav > ul {
-  margin: 0;
-  list-style: none;
-  display: flex;
-  gap: 0.5em;
-  flex-wrap: wrap;
+	margin: 0;
+	list-style: none;
+	display: flex;
+	gap: 0.5em;
+	flex-wrap: wrap;
 }
 
 nav > ul > li > a {
-  color: #fff;
-  text-decoration: none;
-  padding: 0.5em 1em;
-  font-size: 1.2em;
-  display: block;
-  border-bottom: 3px solid transparent;
-  transition: border-bottom-color 0.2s ease-in-out;
+	color: #fff;
+	text-decoration: none;
+	padding: 0.5em 1em;
+	font-size: 1.2em;
+	display: block;
+	border-bottom: 3px solid transparent;
+	transition: border-bottom-color 0.2s ease-in-out;
 }
 
 nav > ul > li > a.active {
-  border-bottom-color: #fff;
+	border-bottom-color: var(--secondary-color);
 }
 
-nav > ul > li > a:hover, nav > ul > li > a:focus {
-  border-bottom-color: var(--secondary-color);
+nav > ul > li > a:hover,
+nav > ul > li > a:focus {
+	border-bottom-color: #fff;
 }
