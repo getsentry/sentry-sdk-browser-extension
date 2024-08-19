@@ -17,5 +17,16 @@
   "background": {
     "{{chrome}}.service_worker": "src/background.ts",
     "{{firefox}}.scripts": ["src/background.ts"]
-  }
+  },
+  "devtools_page": "src/devtools.html",
+  "permissions": ["scripting", "activeTab"],
+  "host_permissions": [
+    "https://*//"
+  ],
+  "web_accessible_resources": [
+   {
+     "resources": ["src/web-accessible-script.js"],
+     "matches": ["https://*/*"]
+   }
+ ]
 }
