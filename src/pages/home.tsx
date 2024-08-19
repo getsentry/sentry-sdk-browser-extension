@@ -2,7 +2,7 @@ import { Integration, Options, SdkInfo } from '@sentry/types';
 import { createSignal } from 'solid-js';
 import browser from 'webextension-polyfill';
 import { ClientMessage } from '../types';
-import { getMessageData } from '../utils/getMessageData';
+import { getMessageData, isClientMessage } from '../utils/getMessageData';
 
 export default function Home() {
 	const [sdkInfo, setSdkInfo] = createSignal<SdkInfo | undefined>(undefined);
@@ -57,10 +57,6 @@ function WithSdk(sdkInfo: SdkInfo, options: Options) {
 
 function WithoutSdk() {
 	return <div>Sentry SDK not detected.</div>;
-}
-
-function isClientMessage(message: any): message is ClientMessage {
-	return message.type === 'CLIENT';
 }
 
 function serializeOption<Option extends keyof Options>(option: Option, value: Options[Option]): string {
