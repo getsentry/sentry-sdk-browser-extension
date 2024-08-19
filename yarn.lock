@@ -657,10 +657,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:^8.26.0":
+"@sentry/types@npm:8.26.0, @sentry/types@npm:^8.26.0":
   version: 8.26.0
   resolution: "@sentry/types@npm:8.26.0"
   checksum: 10c0/9bc198e31354d8473d77726b282dd0044c26faa4257b362eda1ae132cfeadb75bb29cdfb624dbd6d8f1b8f1862d3c04631a266d5e2bf4b6c79a916bb79562c78
+  languageName: node
+  linkType: hard
+
+"@sentry/utils@npm:^8.26.0":
+  version: 8.26.0
+  resolution: "@sentry/utils@npm:8.26.0"
+  dependencies:
+    "@sentry/types": "npm:8.26.0"
+  checksum: 10c0/26a426f4c98e767edbf8ce10c2428c8380faa671133c86496ef696e3995914540ce6d4d92c1f0d7797157acd043f89ac1e463c98a30ea4a1bdd4a89ac83b40d5
   languageName: node
   linkType: hard
 
@@ -1870,6 +1879,13 @@ __metadata:
   version: 3.0.0
   resolution: "has-yarn@npm:3.0.0"
   checksum: 10c0/38c76618cb764e4a98ea114a3938e0bed6ceafb6bacab2ffb32e7c7d1e18b5e09cd03387d507ee87072388e1f20b1f80947fee62c41fc450edfbbdc02a665787
+  languageName: node
+  linkType: hard
+
+"highlight.js@npm:^11.10.0":
+  version: 11.10.0
+  resolution: "highlight.js@npm:11.10.0"
+  checksum: 10c0/cd8bf7ef06cbd72ddb83580ecabe769f08f062be8bb82d2eb492d31c17f7480d1f8d14a66fc81deee0601645435f19f04c470510563f847242a41ccff0ab873e
   languageName: node
   linkType: hard
 
@@ -3148,8 +3164,10 @@ __metadata:
   resolution: "sentry-sdk-browser-extension@workspace:."
   dependencies:
     "@sentry/types": "npm:^8.26.0"
+    "@sentry/utils": "npm:^8.26.0"
     "@solidjs/router": "npm:^0.14.3"
     "@types/webextension-polyfill": "npm:^0.10.0"
+    highlight.js: "npm:^11.10.0"
     prettier: "npm:^3.3.3"
     solid-js: "npm:^1.8.21"
     typescript: "npm:^5.3.2"

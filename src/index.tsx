@@ -1,11 +1,18 @@
 /* @refresh reload */
 import './app.css';
+import 'highlight.js/styles/github.css';
 
 import browser from 'webextension-polyfill';
 import { render } from 'solid-js/web';
 import { HashRouter } from '@solidjs/router';
 import { routes } from './routes';
 import { Layout } from './layout';
+
+import hljs from 'highlight.js/lib/core';
+import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('typescript', typescript);
 
 const root = document.getElementById('root')!;
 

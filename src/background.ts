@@ -8,33 +8,51 @@ import { getMessageData, isClientMessage, isRequestUpdatesMessage } from './util
  * The application can request up-to-date messages by triggering a message itself.
  */
 
-let latestClientMessage: ClientMessage | undefined;
+const latestClientMessage = new Map<number, ClientMessage | undefined>();
 
 browser.runtime.onInstalled.addListener((details) => {
 	console.log('Extension installed:', details);
 
-	browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+	browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+		const tabId = sender.tab?.id;
+
 		if (isFromBackground(message)) {
+			sendResponse();
 			return;
 		}
 
 		const data = getMessageData(message);
 
-		if (isClientMessage(data)) {
-			latestClientMessage = data;
+		if (isClientMessage(data) && tabId) {
+			console.log('caching it for ', tabId);
+			latestClientMessage.set(tabId, data);
 		}
 
 		if (isRequestUpdatesMessage(data)) {
-			sendUpdates();
+			sendUpdates(data.tabId, false);
 		}
 
 		sendResponse();
 	});
+
+	browser.tabs.onActivated.addListener((tabInfo) => {
+		sendUpdates(tabInfo.tabId);
+	});
+
+	browser.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
+		if (changeInfo.status === 'complete') {
+			console.log('deleting it for...', tabId);
+			latestClientMessage.delete(tabId);
+		}
+	});
 });
 
-function sendUpdates() {
-	if (latestClientMessage) {
-		browser.runtime.sendMessage({ json: latestClientMessage, fromBackground: true });
+function sendUpdates(tabId: number, force = true) {
+	const data = latestClientMessage.get(tabId);
+	if (data && !force) {
+		browser.runtime.sendMessage({ json: data, fromBackground: true });
+	} else if (force) {
+		browser.runtime.sendMessage({ json: { type: data?.type }, fromBackground: true });
 	}
 }
 

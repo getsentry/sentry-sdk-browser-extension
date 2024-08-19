@@ -20,11 +20,11 @@
 	},
 	"devtools_page": "src/devtools.html",
 	"permissions": ["scripting", "activeTab"],
-	"host_permissions": ["https://*//"],
+	"host_permissions": ["https://*//", "http://*/*"],
 	"web_accessible_resources": [
 		{
 			"resources": ["src/web-accessible-script.js"],
-			"matches": ["https://*/*"]
+			"matches": ["https://*/*", "http://*/*"]
 		}
 	]
 }

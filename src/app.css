@@ -21,7 +21,7 @@ html {
 
 body {
 	font-family: Roboto, Helvetica, Arial, sans-serif;
-	font-size: 16px;
+	font-size: 14px;
 	line-height: 1.5;
 	color: #333;
 	background-color: #f4f4f4;
@@ -33,6 +33,10 @@ ul {
 
 main {
 	padding: 1em;
+}
+
+p {
+	margin-bottom: 1em;
 }
 
 header {
@@ -81,4 +85,49 @@ nav > ul > li > a.active {
 nav > ul > li > a:hover,
 nav > ul > li > a:focus {
 	border-bottom-color: #fff;
+}
+
+table {
+	border-collapse: collapse;
+	font-size: 0.8em;
+	max-width: 100%;
+	width: 100%;
+	table-layout: fixed;
+}
+
+th {
+	text-align: left;
+}
+
+th:first-child {
+	width: 200px;
+}
+
+th,
+td {
+	padding: 0.25em 0.5em;
+	background: #fff;
+	border: 1px solid #999;
+	word-wrap: break-word;
+}
+
+th:first-child {
+	border-top-left-radius: 0.25em;
+}
+
+th:last-child {
+	border-top-right-radius: 0.25em;
+}
+
+tr:last-child td:first-child {
+	border-bottom-left-radius: 0.25em;
+}
+
+tr:last-child td:last-child {
+	border-bottom-right-radius: 0.25em;
+}
+
+pre {
+	max-width: 100%;
+	overflow-x: auto;
 }

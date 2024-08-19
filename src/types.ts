@@ -12,6 +12,7 @@ export interface ClientMessage {
 
 export interface RequestUpdatesMessage {
 	type: 'REQUEST_UPDATES';
+	tabId: number;
 }
 
 export type MessageData = ClientMessage | RequestUpdatesMessage;

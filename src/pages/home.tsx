@@ -1,13 +1,16 @@
 import { Integration, Options, SdkInfo } from '@sentry/types';
-import { createSignal } from 'solid-js';
+import { createSignal, JSX } from 'solid-js';
 import browser from 'webextension-polyfill';
-import { ClientMessage } from '../types';
 import { getMessageData, isClientMessage } from '../utils/getMessageData';
+import { CodeBlock, InlineCode } from '../components/CodeSnippet';
+import { RequestUpdatesMessage } from '../types';
 
 export default function Home() {
 	const [sdkInfo, setSdkInfo] = createSignal<SdkInfo | undefined>(undefined);
 	const [options, setOptions] = createSignal<Options | undefined>(undefined);
 	const [isLoading, setIsLoading] = createSignal(true);
+
+	const tabId = browser.devtools.inspectedWindow.tabId;
 
 	browser.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
 		const data = getMessageData(message);
@@ -20,8 +23,10 @@ export default function Home() {
 	});
 
 	if (isLoading()) {
+		const data: RequestUpdatesMessage = { type: 'REQUEST_UPDATES', tabId };
+
 		// Ensure we get data, even if the content script has already run
-		browser.runtime.sendMessage({ json: { type: 'REQUEST_UPDATES' } });
+		browser.runtime.sendMessage({ json: data });
 	}
 
 	return <section>{isLoading() ? Loading() : Loaded(sdkInfo(), options())}</section>;
@@ -39,18 +44,23 @@ function Loaded(sdkInfo: SdkInfo | undefined, options: Options | undefined) {
 }
 
 function WithSdk(sdkInfo: SdkInfo, options: Options) {
+	console.log(sdkInfo);
+
+	const firstPackage = sdkInfo.packages?.length === 1 ? sdkInfo.packages[0] : undefined;
+
 	return (
 		<>
-			<div>
-				SDK {sdkInfo.name} with version {sdkInfo.version} loaded.
-			</div>
-			<ul>
-				{Object.entries(options).map(([key, value]) => (
-					<li>
-						{key}: {serializeOption(key as keyof Options, value)}
-					</li>
-				))}
-			</ul>
+			<p>
+				SDK <strong>{sdkInfo.name}</strong> with version <strong>{sdkInfo.version}</strong> detected.
+				{firstPackage && (
+					<>
+						{' '}
+						Installed from <strong>{firstPackage.name}</strong>.
+					</>
+				)}
+			</p>
+
+			<SdkOptions options={options} />
 		</>
 	);
 }
@@ -59,24 +69,37 @@ function WithoutSdk() {
 	return <div>Sentry SDK not detected.</div>;
 }
 
-function serializeOption<Option extends keyof Options>(option: Option, value: Options[Option]): string {
+function SdkOptions({ options }: { options: Options }) {
+	return (
+		<table>
+			<thead>
+				<tr>
+					<th>Option</th>
+					<th>Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				{Object.entries(options).map(([key, value]) => (
+					<tr>
+						<td>{InlineCode({ code: key })}</td>
+						<td>{serializeOption(key as keyof Options, value)}</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	);
+}
+
+function serializeOption<Option extends keyof Options>(option: Option, value: Options[Option]): string | JSX.Element {
 	if (!value) {
 		return `${value}`;
 	}
 
-	if (option === 'integrations' && Array.isArray(value)) {
-		return value.map((integration) => serializeIntegration(integration)).join(', ');
-	}
-
-	if (option === 'defaultIntegrations' && Array.isArray(value)) {
-		return value.map((integration) => serializeIntegration(integration)).join(', ');
-	}
-
 	if (typeof value === 'object') {
-		return JSON.stringify(value, null, 2);
+		return CodeBlock({ code: JSON.stringify(value, null, 2) });
 	}
 
-	return `${value}`;
+	return InlineCode({ code: `${value}` });
 }
 
 function serializeIntegration(integration: Integration): string {

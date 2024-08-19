@@ -20,7 +20,9 @@
 	},
 	"dependencies": {
 		"@sentry/types": "^8.26.0",
+		"@sentry/utils": "^8.26.0",
 		"@solidjs/router": "^0.14.3",
+		"highlight.js": "^11.10.0",
 		"solid-js": "^1.8.21"
 	},
 	"volta": {
