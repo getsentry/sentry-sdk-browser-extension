@@ -5,7 +5,7 @@ import { BrowserOptions } from '@sentry/browser';
 import { JsonTextInput } from './JsonTextInput';
 
 export function UpdateConfig(props: { options: BrowserOptions }) {
-	const [dsn, setDsn] = createSignal(props.options.dsn);
+	const [dsn, setDsn] = createSignal<string | undefined>(undefined);
 	const [additionalOptions, setAdditionalOptions] = createSignal<BrowserOptions | undefined>(undefined);
 
 	const submitForm = (event: Event) => {
@@ -13,7 +13,7 @@ export function UpdateConfig(props: { options: BrowserOptions }) {
 
 		const data: UpdateSdkConfigMessage = {
 			type: 'UPDATE_SDK_CONFIG',
-			dsn: dsn() || undefined,
+			dsn: (dsn() && dsn() !== props.options.dsn && dsn()) || undefined,
 			options: additionalOptions(),
 		};
 
@@ -27,8 +27,8 @@ export function UpdateConfig(props: { options: BrowserOptions }) {
 				<input
 					type="text"
 					name="dsn"
-					value={dsn()}
-					placeholder="https://xxx@yyy.ingest.us.sentry.io/zzz"
+					value={dsn() || ''}
+					placeholder={props.options.dsn}
 					onInput={(e) => {
 						const value = e.target.value;
 						setDsn(value);
