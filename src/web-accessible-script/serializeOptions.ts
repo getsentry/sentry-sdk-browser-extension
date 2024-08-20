@@ -13,10 +13,6 @@ export function serializeOptions(options: Options | undefined): Record<string, u
 		opts.transport = serializeTransport(options.transport);
 	}
 
-	if (options.stackParser) {
-		opts.stackParser = serializeStackParser(options.stackParser);
-	}
-
 	if (options.integrations) {
 		opts.integrations = serializeIntegrations(options.integrations);
 	}
@@ -32,20 +28,6 @@ export function serializeOptions(options: Options | undefined): Record<string, u
 	}
 
 	return opts;
-}
-
-function serializeStackParser(stackParser: Options['stackParser']): string | undefined {
-	if (!stackParser) {
-		return undefined;
-	}
-
-	const serialized = `${stackParser}`;
-
-	if (serialized.includes('/sentryWrapped/.test')) {
-		return 'DefaultStackParser';
-	}
-
-	return `CustomStackParser(${serialized})`;
 }
 
 function serializeIntegration(integration: Integration): string {
@@ -77,7 +59,7 @@ function serializeTransport(transport: Options['transport']): string | undefined
 
 	// VERY simple check to see if this is our fetch transport...
 	if (serialized.includes('fetch')) {
-		//return 'FetchTransport';
+		return 'FetchTransport';
 	}
 
 	return `CustomTransport(${serialized})`;
