@@ -25,7 +25,9 @@ window.addEventListener(
 		}
 
 		if (event.data.from && event.data.from === 'sentry/web-accessible-script.js') {
-			browser.runtime.sendMessage({ json: event.data.json }).then((res) => console.log('res', res));
+			browser.runtime.sendMessage({ json: event.data.json }).catch(() => {
+				// TODO: swallow error here?
+			});
 		}
 	},
 	false,

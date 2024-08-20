@@ -28,8 +28,8 @@ browser.scripting.executeScript({
 });
 
 // Whenever the tab is updated, we need to re-inject the content script
-browser.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
-	if (changeInfo.status === 'complete') {
+browser.tabs.onUpdated.addListener((updatedTabId, changeInfo, _tab) => {
+	if (changeInfo.status === 'complete' && updatedTabId === tabId) {
 		browser.scripting.executeScript({
 			target: { tabId },
 			files: ['src/content-script.js'],

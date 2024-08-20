@@ -32,28 +32,18 @@ function sendUpdate(): void {
 		);
 	} catch (error) {
 		// swallow error here - TODO ??
-		console.error(error);
 	}
 }
 
-sendUpdate();
-
-let updateTimer: number | undefined;
-
-updateTimer = setInterval(() => {
+// We wait a second to give it time to settle
+setTimeout(() => {
 	sendUpdate();
-}, 5000);
+}, 1000);
 
 // We need to ensure to send a an update whenever the window becomes visible again
 window.addEventListener('visibilitychange', () => {
 	if (!document.hidden) {
 		sendUpdate();
-
-		updateTimer = setInterval(() => {
-			sendUpdate();
-		}, 5000);
-	} else {
-		clearInterval(updateTimer);
 	}
 });
 
