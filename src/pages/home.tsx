@@ -1,4 +1,4 @@
-import { Integration, Options, SdkInfo } from '@sentry/types';
+import { Options, SdkInfo } from '@sentry/types';
 import { createResource, createSignal, JSX } from 'solid-js';
 import browser from 'webextension-polyfill';
 import { getMessageData, isClientMessage } from '../utils/getMessageData';
@@ -88,7 +88,7 @@ function SdkOptions({ options }: { options: Options }) {
 				{Object.entries(options).map(([key, value]) => (
 					<tr>
 						<td>{InlineCode({ code: key })}</td>
-						<td>{serializeOption(key as keyof Options, value)}</td>
+						<td>{serializeOption(value)}</td>
 					</tr>
 				))}
 			</tbody>
@@ -96,7 +96,7 @@ function SdkOptions({ options }: { options: Options }) {
 	);
 }
 
-function serializeOption<Option extends keyof Options>(option: Option, value: Options[Option]): string | JSX.Element {
+function serializeOption<Option extends keyof Options>(value: Options[Option]): string | JSX.Element {
 	if (!value) {
 		return `${value}`;
 	}
@@ -106,8 +106,4 @@ function serializeOption<Option extends keyof Options>(option: Option, value: Op
 	}
 
 	return InlineCode({ code: `${value}` });
-}
-
-function serializeIntegration(integration: Integration): string {
-	return integration.name;
 }
