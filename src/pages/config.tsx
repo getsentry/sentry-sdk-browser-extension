@@ -23,7 +23,7 @@ function Loaded(sdkInfo: SdkInfo | undefined, options: BrowserOptions | undefine
 	return WithoutSdk();
 }
 
-function WithSdk(sdkInfo: SdkInfo, options: BrowserOptions) {
+function WithSdk(_sdkInfo: SdkInfo, options: BrowserOptions) {
 	return (
 		<>
 			<h1>Update SDK Config</h1>

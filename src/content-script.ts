@@ -1,5 +1,4 @@
 import browser from 'webextension-polyfill';
-import { InjectSdkMessage } from './types';
 import { isInjectReplayMessage, isInjectSdkMessage, isUpdateConfigMessage } from './utils/getMessageData';
 
 /**
