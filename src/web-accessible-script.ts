@@ -3,9 +3,10 @@ import { getLegacyHub } from './web-accessible-script/getLegacyHub';
 import { getV8Client } from './web-accessible-script/getV8Client';
 import { serializeOptions } from './web-accessible-script/serializeOptions';
 import { injectSentrySdk } from './web-accessible-script/injectSentry';
-import { isInjectReplayMessage, isInjectSdkMessage } from './utils/getMessageData';
+import { isInjectReplayMessage, isInjectSdkMessage, isUpdateConfigMessage } from './utils/getMessageData';
 import { getReplayData } from './web-accessible-script/replay';
 import { injectReplay } from './web-accessible-script/injectReplay';
+import { updateSdkOptions } from './web-accessible-script/updateSdkOptions';
 
 /**
  * This file is injected by content-script.ts into the inspected page.
@@ -74,6 +75,18 @@ window.addEventListener('message', (event) => {
 
 			if (client) {
 				injectReplay(client, data).then(() => sendUpdate());
+			}
+		}
+
+		if (isUpdateConfigMessage(data)) {
+			const hubClient = getLegacyHub();
+			const v8Client = getV8Client();
+
+			const client = v8Client || hubClient;
+
+			if (client) {
+				updateSdkOptions(client, data);
+				sendUpdate();
 			}
 		}
 	} catch {

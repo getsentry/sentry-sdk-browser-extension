@@ -22,7 +22,6 @@ export interface InjectSdkMessage {
 export interface UpdateSdkConfigMessage {
 	type: 'UPDATE_SDK_CONFIG';
 	dsn?: string;
-	debug?: boolean;
 	options?: BrowserOptions;
 }
 

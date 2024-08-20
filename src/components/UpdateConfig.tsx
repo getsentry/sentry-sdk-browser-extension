@@ -6,7 +6,6 @@ import { JsonTextInput } from './JsonTextInput';
 
 export function UpdateConfig(props: { options: BrowserOptions }) {
 	const [dsn, setDsn] = createSignal(props.options.dsn);
-	const [debug, setDebug] = createSignal<boolean | undefined>(props.options.debug);
 	const [additionalOptions, setAdditionalOptions] = createSignal<BrowserOptions | undefined>(undefined);
 
 	const submitForm = (event: Event) => {
@@ -15,7 +14,6 @@ export function UpdateConfig(props: { options: BrowserOptions }) {
 		const data: UpdateSdkConfigMessage = {
 			type: 'UPDATE_SDK_CONFIG',
 			dsn: dsn() || undefined,
-			debug: debug(),
 			options: additionalOptions(),
 		};
 
@@ -37,19 +35,6 @@ export function UpdateConfig(props: { options: BrowserOptions }) {
 					}}
 					required={true}
 				/>
-			</div>
-
-			<div class="form-item">
-				<input
-					type="checkbox"
-					id="debug"
-					checked={debug()}
-					onInput={(e) => {
-						const value = e.target.checked;
-						setDebug(value);
-					}}
-				/>
-				<label for="debug">Debug</label>
 			</div>
 
 			<div class="form-item">
