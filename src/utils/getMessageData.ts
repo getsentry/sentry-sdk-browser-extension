@@ -1,4 +1,4 @@
-import { ClientMessage, MessageData } from '../types';
+import { ClientMessage, InjectSdkMessage, MessageData } from '../types';
 
 export function getMessageData(message: unknown): MessageData | undefined {
 	if (!message) {
@@ -31,6 +31,10 @@ export function getMessageData(message: unknown): MessageData | undefined {
 
 export function isClientMessage(message: any): message is ClientMessage {
 	return message && message.type === 'CLIENT';
+}
+
+export function isInjectSdkMessage(message: any): message is InjectSdkMessage {
+	return message && message.type === 'INJECT_SDK';
 }
 
 function parseMessageJson(json: unknown): MessageData | undefined {

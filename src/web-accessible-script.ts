@@ -2,6 +2,8 @@ import { normalize } from '@sentry/utils';
 import { getLegacyHub } from './web-accessible-script/getLegacyHub';
 import { getV8Client } from './web-accessible-script/getV8Client';
 import { serializeOptions } from './web-accessible-script/serializeOptions';
+import { injectSentrySdk } from './web-accessible-script/injectSentry';
+import { isInjectSdkMessage } from './utils/getMessageData';
 
 /**
  * This file is injected by content-script.ts into the inspected page.
@@ -18,6 +20,8 @@ function sendUpdate(): void {
 
 	const sdkMetadata = client?.getSdkMetadata();
 	const options = serializeOptions(client?.getOptions());
+
+	console.log('SEND UPDATE', { sdkMetadata, options });
 
 	if (document.hidden) {
 		return;
@@ -46,6 +50,23 @@ function sendUpdate(): void {
 setTimeout(() => {
 	sendUpdate();
 }, 1000);
+
+window.addEventListener('message', (event) => {
+	try {
+		if (event.source !== window || event.data.from !== 'sentry/content-script.js') {
+			return;
+		}
+
+		const data = event.data.json as Record<string, unknown>;
+
+		if (isInjectSdkMessage(data)) {
+			// Send update afterwards...
+			injectSentrySdk(data).then(() => sendUpdate());
+		}
+	} catch {
+		// ignore errors here...
+	}
+});
 
 // We need to ensure to send a an update whenever the window becomes visible again
 window.addEventListener('visibilitychange', () => {

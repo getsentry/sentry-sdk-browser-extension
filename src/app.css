@@ -131,3 +131,35 @@ pre {
 	max-width: 100%;
 	overflow-x: auto;
 }
+
+button {
+	background-color: var(--primary-color);
+	color: #fff;
+	border: 0;
+	border-radius: 0.25em;
+	padding: 0.5em 1em;
+	cursor: pointer;
+}
+
+input[type='text'] {
+	padding: 0.5em;
+	border-radius: 0.25em;
+	border: 1px solid #999;
+	display: block;
+	width: 100%;
+}
+
+.form-item {
+	margin-bottom: 1em;
+	display: flex;
+	gap: 0.25em 0.5em;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+label {
+	display: block;
+	font-weight: bold;
+	flex-basis: 150px;
+	flex-shrink: 0;
+}
