@@ -3,16 +3,13 @@ import { createSignal, JSX } from 'solid-js';
 import browser from 'webextension-polyfill';
 import { getMessageData, isClientMessage } from '../utils/getMessageData';
 import { CodeBlock, InlineCode } from '../components/CodeSnippet';
-import { RequestUpdatesMessage } from '../types';
 
 export default function Home() {
 	const [sdkInfo, setSdkInfo] = createSignal<SdkInfo | undefined>(undefined);
 	const [options, setOptions] = createSignal<Options | undefined>(undefined);
 	const [isLoading, setIsLoading] = createSignal(true);
 
-	const tabId = browser.devtools.inspectedWindow.tabId;
-
-	browser.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
+	browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 		const data = getMessageData(message);
 
 		if (isClientMessage(data)) {
@@ -20,14 +17,9 @@ export default function Home() {
 			setOptions(data.options);
 			setIsLoading(false);
 		}
+
+		sendResponse();
 	});
-
-	if (isLoading()) {
-		const data: RequestUpdatesMessage = { type: 'REQUEST_UPDATES', tabId };
-
-		// Ensure we get data, even if the content script has already run
-		browser.runtime.sendMessage({ json: data });
-	}
 
 	return <section>{isLoading() ? Loading() : Loaded(sdkInfo(), options())}</section>;
 }
@@ -44,8 +36,6 @@ function Loaded(sdkInfo: SdkInfo | undefined, options: Options | undefined) {
 }
 
 function WithSdk(sdkInfo: SdkInfo, options: Options) {
-	console.log(sdkInfo);
-
 	const firstPackage = sdkInfo.packages?.length === 1 ? sdkInfo.packages[0] : undefined;
 
 	return (

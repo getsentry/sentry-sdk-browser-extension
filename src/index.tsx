@@ -27,4 +27,14 @@ browser.scripting.executeScript({
 	files: ['src/content-script.js'],
 });
 
+// Whenever the tab is updated, we need to re-inject the content script
+browser.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
+	if (changeInfo.status === 'complete') {
+		browser.scripting.executeScript({
+			target: { tabId },
+			files: ['src/content-script.js'],
+		});
+	}
+});
+
 render(() => <HashRouter root={Layout}>{routes}</HashRouter>, root);

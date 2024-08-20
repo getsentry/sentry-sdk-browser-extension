@@ -1,4 +1,4 @@
-import { ClientMessage, MessageData, RequestUpdatesMessage } from '../types';
+import { ClientMessage, MessageData } from '../types';
 
 export function getMessageData(message: unknown): MessageData | undefined {
 	if (!message) {
@@ -30,11 +30,7 @@ export function getMessageData(message: unknown): MessageData | undefined {
 }
 
 export function isClientMessage(message: any): message is ClientMessage {
-	return message.type === 'CLIENT';
-}
-
-export function isRequestUpdatesMessage(message: any): message is RequestUpdatesMessage {
-	return message.type === 'REQUEST_UPDATES';
+	return message && message.type === 'CLIENT';
 }
 
 function parseMessageJson(json: unknown): MessageData | undefined {
@@ -59,7 +55,7 @@ function parseMessageJson(json: unknown): MessageData | undefined {
 }
 
 function getParsedMessageData(data: Record<string, unknown>): MessageData | undefined {
-	if (isClientMessage(data) || isRequestUpdatesMessage(data)) {
+	if (isClientMessage(data)) {
 		return data;
 	}
 

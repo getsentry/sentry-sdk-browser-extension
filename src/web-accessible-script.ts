@@ -12,6 +12,10 @@ function sendUpdate(): void {
 	const sdkMetadata = client?.getSdkMetadata();
 	const options = serializeOptions(client?.getOptions());
 
+	if (document.hidden) {
+		return;
+	}
+
 	try {
 		window.postMessage(
 			{
@@ -34,16 +38,23 @@ function sendUpdate(): void {
 
 sendUpdate();
 
+let updateTimer: number | undefined;
+
+updateTimer = setInterval(() => {
+	sendUpdate();
+}, 5000);
+
 // We need to ensure to send a an update whenever the window becomes visible again
 window.addEventListener('visibilitychange', () => {
 	if (!document.hidden) {
 		sendUpdate();
-	}
-});
 
-window.document.addEventListener('DOMContentLoaded', () => {
-	console.log('document loaded???');
-	sendUpdate();
+		updateTimer = setInterval(() => {
+			sendUpdate();
+		}, 5000);
+	} else {
+		clearInterval(updateTimer);
+	}
 });
 
 function serializeTransport(transport: Options['transport']): string | undefined {
