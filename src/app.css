@@ -82,8 +82,7 @@ nav > ul > li > a.active {
 	border-bottom-color: var(--secondary-color);
 }
 
-nav > ul > li > a:hover,
-nav > ul > li > a:focus {
+nav > ul > li > a:hover {
 	border-bottom-color: #fff;
 }
 

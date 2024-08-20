@@ -1,31 +1,13 @@
 import { Options, SdkInfo } from '@sentry/types';
-import { createResource, createSignal, JSX } from 'solid-js';
-import browser from 'webextension-polyfill';
-import { getMessageData, isClientMessage } from '../utils/getMessageData';
-import { CodeBlock, InlineCode } from '../components/CodeSnippet';
-import { getLatestSdkVersion } from '../utils/getLatestSdkVersion';
 import { InjectSdk } from '../components/InjectSdk';
+import { isLoadingSignal, latestVersionResource, optionsSignal, sdkInfoSignal } from '..';
+import { OptionsTable } from '../components/OptionsTable';
 
 export default function Home() {
-	const [sdkInfo, setSdkInfo] = createSignal<SdkInfo | undefined>(undefined);
-	const [options, setOptions] = createSignal<Options | undefined>(undefined);
-	const [isLoading, setIsLoading] = createSignal(true);
-
-	const [latestVersion] = createResource(async () => {
-		return getLatestSdkVersion();
-	});
-
-	browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-		const data = getMessageData(message);
-
-		if (isClientMessage(data)) {
-			setSdkInfo(data.sdkMetadata?.sdk);
-			setOptions(data.options);
-			setIsLoading(false);
-		}
-
-		sendResponse();
-	});
+	const [sdkInfo] = sdkInfoSignal;
+	const [options] = optionsSignal;
+	const [isLoading] = isLoadingSignal;
+	const [latestVersion] = latestVersionResource;
 
 	return <section>{isLoading() ? Loading() : Loaded(sdkInfo(), options(), latestVersion())}</section>;
 }
@@ -46,6 +28,8 @@ function WithSdk(sdkInfo: SdkInfo, options: Options, latestVersion: string | und
 
 	return (
 		<>
+			<h1>Sentry SDK</h1>
+
 			<p>
 				SDK <strong>{sdkInfo.name}</strong> with version <strong>{sdkInfo.version}</strong>
 				{latestVersion && ` (Latest: ${latestVersion})`} detected.
@@ -57,7 +41,7 @@ function WithSdk(sdkInfo: SdkInfo, options: Options, latestVersion: string | und
 				)}
 			</p>
 
-			<SdkOptions options={options} />
+			<OptionsTable options={options as Record<string, unknown>} />
 		</>
 	);
 }
@@ -73,37 +57,4 @@ function WithoutSdk(latestSdkVersion: string | undefined) {
 			)}
 		</div>
 	);
-}
-
-function SdkOptions({ options }: { options: Options }) {
-	return (
-		<table>
-			<thead>
-				<tr>
-					<th>Option</th>
-					<th>Value</th>
-				</tr>
-			</thead>
-			<tbody>
-				{Object.entries(options).map(([key, value]) => (
-					<tr>
-						<td>{InlineCode({ code: key })}</td>
-						<td>{serializeOption(value)}</td>
-					</tr>
-				))}
-			</tbody>
-		</table>
-	);
-}
-
-function serializeOption<Option extends keyof Options>(value: Options[Option]): string | JSX.Element {
-	if (!value) {
-		return `${value}`;
-	}
-
-	if (typeof value === 'object') {
-		return CodeBlock({ code: JSON.stringify(value, null, 2) });
-	}
-
-	return InlineCode({ code: `${value}` });
 }

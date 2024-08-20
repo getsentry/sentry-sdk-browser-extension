@@ -11,6 +11,12 @@ import { Layout } from './layout';
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import typescript from 'highlight.js/lib/languages/typescript';
+import { createResource, createSignal } from 'solid-js';
+import { getLatestSdkVersion } from './utils/getLatestSdkVersion';
+import { Options, SdkInfo } from '@sentry/types';
+import { getMessageData, isClientMessage } from './utils/getMessageData';
+import { ReplayData } from './types';
+
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('typescript', typescript);
 
@@ -19,6 +25,29 @@ const root = document.getElementById('root')!;
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 	throw new Error('Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got misspelled?');
 }
+
+export const sdkInfoSignal = createSignal<SdkInfo | undefined>(undefined);
+export const optionsSignal = createSignal<Options | undefined>(undefined);
+export const replaySignal = createSignal<ReplayData | undefined>(undefined);
+export const isLoadingSignal = createSignal(true);
+
+export const latestVersionResource = createResource(async () => {
+	return getLatestSdkVersion();
+});
+
+browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+	const data = getMessageData(message);
+
+	if (isClientMessage(data)) {
+		console.log(data);
+		sdkInfoSignal[1](data.sdkMetadata?.sdk);
+		optionsSignal[1](data.options);
+		replaySignal[1](data.replay);
+		isLoadingSignal[1](false);
+	}
+
+	sendResponse();
+});
 
 const tabId = browser.devtools.inspectedWindow.tabId;
 

@@ -5,6 +5,7 @@ export interface ClientMessage {
 	type: 'CLIENT';
 	sdkMetadata: SdkMetadata;
 	options: BrowserOptions;
+	replay: ReplayData | undefined;
 }
 
 export type MessageData = ClientMessage;
@@ -18,4 +19,13 @@ export interface InjectSdkMessage {
 	enableTracing?: boolean;
 	enableFeedback?: boolean;
 	options?: BrowserOptions;
+}
+
+export interface ReplayData {
+	replayId: string | undefined;
+	isEnabled: boolean;
+	isPaused: boolean;
+	recordingMode: string | undefined;
+	session: Record<string, unknown> | undefined;
+	options: Record<string, unknown> | undefined;
 }

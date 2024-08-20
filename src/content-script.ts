@@ -49,7 +49,6 @@ browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 		const data = message.json;
 
 		if (isInjectSdkMessage(data)) {
-			console.log(data);
 			window.postMessage({ from: 'sentry/content-script.js', json: data });
 		}
 	} finally {
@@ -60,7 +59,6 @@ browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 window.addEventListener(
 	'message',
 	(event) => {
-		console.log('received message in content-script', event);
 		// We only accept messages from ourselves
 		if (event.source !== window) {
 			return;

@@ -4,6 +4,7 @@ import { getV8Client } from './web-accessible-script/getV8Client';
 import { serializeOptions } from './web-accessible-script/serializeOptions';
 import { injectSentrySdk } from './web-accessible-script/injectSentry';
 import { isInjectSdkMessage } from './utils/getMessageData';
+import { getReplayData } from './web-accessible-script/replay';
 
 /**
  * This file is injected by content-script.ts into the inspected page.
@@ -20,8 +21,7 @@ function sendUpdate(): void {
 
 	const sdkMetadata = client?.getSdkMetadata();
 	const options = serializeOptions(client?.getOptions());
-
-	console.log('SEND UPDATE', { sdkMetadata, options });
+	const replay = client ? getReplayData(client) : undefined;
 
 	if (document.hidden) {
 		return;
@@ -36,6 +36,7 @@ function sendUpdate(): void {
 						type: 'CLIENT',
 						sdkMetadata,
 						options,
+						replay,
 					}),
 				),
 			},

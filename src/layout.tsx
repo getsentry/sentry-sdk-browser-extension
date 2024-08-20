@@ -1,9 +1,7 @@
-import { A, useLocation } from '@solidjs/router';
+import { A } from '@solidjs/router';
 import { ParentProps } from 'solid-js';
 
 export const Layout = (props: ParentProps) => {
-	// const location = useLocation();
-
 	return (
 		<>
 			<header>
@@ -14,14 +12,20 @@ export const Layout = (props: ParentProps) => {
 				<nav>
 					<ul>
 						<li>
-							<A href="/">Overview</A>
+							<A href="/" end={true}>
+								Overview
+							</A>
+						</li>
+						<li>
+							<A href="/replay" end={true}>
+								Replay
+							</A>
 						</li>
 					</ul>
 				</nav>
 			</header>
 
 			<main>
-				<h1>Sentry SDK</h1>
 				<div>{props.children}</div>
 			</main>
 		</>
