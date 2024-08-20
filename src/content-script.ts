@@ -1,5 +1,13 @@
 import browser from 'webextension-polyfill';
 
+/**
+ * This file is injected when the extension panel is opened (index.tsx).
+ * It is responsilbe ot inject the web-accessible-script.js file into the inspected page,
+ * which is the script that has access to the host window.
+ *
+ * This file receives messages sent from the web-accessible-script.js file and forwards them to the extension.
+ */
+
 function injectScript(filePath: string, tag: string) {
 	// Bail if the script already exists
 	if (document.querySelector(`script[src="${filePath}"]`)) {
