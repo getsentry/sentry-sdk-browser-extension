@@ -3,8 +3,9 @@ import { getLegacyHub } from './web-accessible-script/getLegacyHub';
 import { getV8Client } from './web-accessible-script/getV8Client';
 import { serializeOptions } from './web-accessible-script/serializeOptions';
 import { injectSentrySdk } from './web-accessible-script/injectSentry';
-import { isInjectSdkMessage } from './utils/getMessageData';
+import { isInjectReplayMessage, isInjectSdkMessage } from './utils/getMessageData';
 import { getReplayData } from './web-accessible-script/replay';
+import { injectReplay } from './web-accessible-script/injectReplay';
 
 /**
  * This file is injected by content-script.ts into the inspected page.
@@ -63,6 +64,17 @@ window.addEventListener('message', (event) => {
 		if (isInjectSdkMessage(data)) {
 			// Send update afterwards...
 			injectSentrySdk(data).then(() => sendUpdate());
+		}
+
+		if (isInjectReplayMessage(data)) {
+			const hubClient = getLegacyHub();
+			const v8Client = getV8Client();
+
+			const client = v8Client || hubClient;
+
+			if (client) {
+				injectReplay(client, data).then(() => sendUpdate());
+			}
 		}
 	} catch {
 		// ignore errors here...

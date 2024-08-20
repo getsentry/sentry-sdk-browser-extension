@@ -1,5 +1,5 @@
-import { SdkMetadata } from '@sentry/types';
-import { BrowserOptions } from '@sentry/browser';
+import type { SdkMetadata } from '@sentry/types';
+import type { BrowserOptions, replayIntegration } from '@sentry/browser';
 
 export interface ClientMessage {
 	type: 'CLIENT';
@@ -19,6 +19,14 @@ export interface InjectSdkMessage {
 	enableTracing?: boolean;
 	enableFeedback?: boolean;
 	options?: BrowserOptions;
+}
+
+export interface InjectReplayMessage {
+	type: 'INJECT_REPLAY';
+	version: string;
+	replaysSessionSampleRate?: number;
+	replaysOnErrorSampleRate?: number;
+	replayOptions?: Parameters<typeof replayIntegration>[0];
 }
 
 export interface ReplayData {

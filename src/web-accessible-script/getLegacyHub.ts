@@ -1,15 +1,15 @@
-import { Client } from '@sentry/types';
+import type { BrowserClient } from '@sentry/browser';
 
 interface WindowWithLegacyCarrier extends Window {
 	__SENTRY__?: {
 		hub?: {
-			getClient(): Client;
+			getClient(): BrowserClient;
 			_version: string;
 		};
 	};
 }
 
-export function getLegacyHub(): Client | undefined {
+export function getLegacyHub(): BrowserClient | undefined {
 	const hub = (window as WindowWithLegacyCarrier).__SENTRY__?.hub;
 
 	if (hub) {

@@ -140,12 +140,18 @@ button {
 	cursor: pointer;
 }
 
-input[type='text'] {
+input[type='text'],
+input[type='number'],
+textarea {
 	padding: 0.5em;
 	border-radius: 0.25em;
 	border: 1px solid #999;
 	display: block;
 	width: 100%;
+}
+
+textarea {
+	min-height: 250px;
 }
 
 .form-item {

@@ -1,30 +1,7 @@
 import type * as SentryType from '@sentry/browser';
 import { InjectSdkMessage } from '../types';
 import { Integration } from '@sentry/types';
-
-function injectCDNScriptTag(sdkBundleUrl: string, onSentryCDNScriptLoaded: () => void) {
-	if (document.querySelector(`script[src="${sdkBundleUrl}"]`)) {
-		return;
-	}
-
-	// Create a `script` tag with provided SDK `url` and attach it just before the first, already existing `script` tag
-	// Scripts that are dynamically created and added to the document are async by default,
-	// they don't block rendering and execute as soon as they download, meaning they could
-	// come out in the wrong order. Because of that we don't need async=1 as GA does.
-	// it was probably(?) a legacy behavior that they left to not modify few years old snippet
-	// https://www.html5rocks.com/en/tutorials/speed/script-loading/
-	const firstScriptTagInDom = document.scripts[0];
-	const cdnScriptTag = document.createElement('script') as HTMLScriptElement;
-	cdnScriptTag.src = sdkBundleUrl;
-	cdnScriptTag.crossOrigin = 'anonymous';
-
-	// Once our SDK is loaded
-	cdnScriptTag.addEventListener('load', onSentryCDNScriptLoaded, {
-		once: true,
-		passive: true,
-	});
-	firstScriptTagInDom.parentNode!.insertBefore(cdnScriptTag, firstScriptTagInDom);
-}
+import { injectCDNScriptTag } from './injectCdnScriptTag';
 
 function buildSdkBundleUrl({ version, debug, enableFeedback, enableReplay, enableTracing }: InjectSdkMessage): string {
 	const bundleParts = [`https://browser.sentry-cdn.com/${version}/bundle`];

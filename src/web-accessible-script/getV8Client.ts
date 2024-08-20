@@ -1,4 +1,4 @@
-import { Client } from '@sentry/types';
+import type { BrowserClient } from '@sentry/browser';
 
 interface WindowWithVersionedCarrier extends Window {
 	__SENTRY__?: {
@@ -7,13 +7,13 @@ interface WindowWithVersionedCarrier extends Window {
 		Exclude<string, 'version'>,
 		{
 			defaultCurrentScope?: {
-				getClient(): Client;
+				getClient(): BrowserClient;
 			};
 		}
 	>;
 }
 
-export function getV8Client(): Client | undefined {
+export function getV8Client(): BrowserClient | undefined {
 	const currentVersion = (window as WindowWithVersionedCarrier).__SENTRY__?.version;
 
 	if (!currentVersion) {

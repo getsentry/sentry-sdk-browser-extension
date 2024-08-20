@@ -132,8 +132,6 @@ export function InjectSdk(props: { latestSdkVersion: string }) {
 function injectSentrySdk(data: InjectSdkMessage) {
 	const tabId = browser.devtools.inspectedWindow.tabId;
 
-	console.log('sending this...', data);
-
 	browser.tabs.sendMessage(tabId, {
 		from: 'sentry/devtools',
 		json: data,

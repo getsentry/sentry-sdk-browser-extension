@@ -5,8 +5,6 @@ import { ReplayData } from '../types';
 export function getReplayData(client: Client): undefined | ReplayData {
 	const replay = client.getIntegrationByName<ReturnType<typeof replayIntegration>>('Replay');
 
-	console.log('replay!', replay);
-
 	if (!replay) {
 		return undefined;
 	}

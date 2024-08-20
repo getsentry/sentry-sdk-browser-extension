@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 import { InjectSdkMessage } from './types';
-import { isInjectSdkMessage } from './utils/getMessageData';
+import { isInjectReplayMessage, isInjectSdkMessage } from './utils/getMessageData';
 
 /**
  * This file is injected when the extension panel is opened (index.tsx).
@@ -21,21 +21,6 @@ function injectScript(filePath: string, tag: string) {
 	script.setAttribute('type', 'text/javascript');
 	script.setAttribute('src', filePath);
 	node.appendChild(script);
-
-	// TEST THIS!
-	/* setTimeout(() => {
-		const data = {
-			type: 'INJECT_SDK',
-			version: '8.24.0',
-			debug: true,
-			dsn: 'https://33f3f99d7064495b95ccacfb9225bbbf@o447951.ingest.us.sentry.io/4504689757257728',
-			enableReplay: true,
-			enableTracing: true,
-			enableFeedback: true,
-		} satisfies InjectSdkMessage;
-
-		window.postMessage({ from: 'sentry/content-script.js', json: data });
-	}, 100); */
 }
 
 injectScript(browser.runtime.getURL('src/web-accessible-script.js'), 'body');
@@ -48,7 +33,7 @@ browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
 		const data = message.json;
 
-		if (isInjectSdkMessage(data)) {
+		if (isInjectSdkMessage(data) || isInjectReplayMessage(data)) {
 			window.postMessage({ from: 'sentry/content-script.js', json: data });
 		}
 	} finally {
