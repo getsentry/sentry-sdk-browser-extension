@@ -21,6 +21,11 @@ export const Layout = (props: ParentProps) => {
 								Replay
 							</A>
 						</li>
+						<li>
+							<A href="/config" end={true}>
+								Config
+							</A>
+						</li>
 					</ul>
 				</nav>
 			</header>

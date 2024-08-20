@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 import { InjectSdkMessage } from './types';
-import { isInjectReplayMessage, isInjectSdkMessage } from './utils/getMessageData';
+import { isInjectReplayMessage, isInjectSdkMessage, isUpdateConfigMessage } from './utils/getMessageData';
 
 /**
  * This file is injected when the extension panel is opened (index.tsx).
@@ -33,7 +33,7 @@ browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
 		const data = message.json;
 
-		if (isInjectSdkMessage(data) || isInjectReplayMessage(data)) {
+		if (isInjectSdkMessage(data) || isInjectReplayMessage(data) || isUpdateConfigMessage(data)) {
 			window.postMessage({ from: 'sentry/content-script.js', json: data });
 		}
 	} finally {

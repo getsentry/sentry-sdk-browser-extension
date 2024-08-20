@@ -2,11 +2,12 @@ import browser from 'webextension-polyfill';
 import { InjectReplayMessage } from '../types';
 import { createSignal } from 'solid-js';
 import type { replayIntegration } from '@sentry/browser';
+import { JsonTextInput } from './JsonTextInput';
 
 export function InjectReplay(props: { latestSdkVersion: string }) {
 	const [replaysSessionSampleRate, setReplaysSessionSampleRate] = createSignal<number | undefined>(1);
 	const [replaysOnErrorSampleRate, setReplaysOnErrorSampleRate] = createSignal<number | undefined>(undefined);
-	const [replayOptions, setReplayOptions] = createSignal<Parameters<typeof replayIntegration>[0] | undefined>(undefined);
+	const replaySignal = createSignal<Parameters<typeof replayIntegration>[0] | undefined>(undefined);
 
 	const submitForm = (event: Event) => {
 		event.preventDefault();
@@ -15,7 +16,7 @@ export function InjectReplay(props: { latestSdkVersion: string }) {
 			type: 'INJECT_REPLAY',
 			replaysOnErrorSampleRate: replaysOnErrorSampleRate(),
 			replaysSessionSampleRate: replaysSessionSampleRate(),
-			replayOptions: replayOptions(),
+			replayOptions: replaySignal[0](),
 			version: props.latestSdkVersion,
 		};
 
@@ -58,26 +59,7 @@ export function InjectReplay(props: { latestSdkVersion: string }) {
 
 			<div class="form-item">
 				<label for="replayOptions">Other Options (JSON)</label>
-				<textarea
-					name="replayOptions"
-					onInput={(e) => {
-						const value = e.target.value;
-
-						if (!value) {
-							setReplayOptions(undefined);
-							return;
-						}
-
-						try {
-							const json = JSON.parse(value);
-							setReplayOptions(json);
-						} catch (error) {
-							// skip...
-						}
-					}}
-				>
-					{JSON.stringify(replayOptions(), null, 2)}
-				</textarea>
+				<JsonTextInput signal={replaySignal} inputName="replayOptions" />
 			</div>
 
 			<div class="form-item">

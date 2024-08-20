@@ -168,3 +168,11 @@ label {
 	flex-basis: 150px;
 	flex-shrink: 0;
 }
+
+details {
+	margin-bottom: 1em;
+}
+
+.error {
+	color: red;
+}

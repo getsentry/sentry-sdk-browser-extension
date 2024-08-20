@@ -8,8 +8,6 @@ export interface ClientMessage {
 	replay: ReplayData | undefined;
 }
 
-export type MessageData = ClientMessage;
-
 export interface InjectSdkMessage {
 	type: 'INJECT_SDK';
 	version: string;
@@ -18,6 +16,13 @@ export interface InjectSdkMessage {
 	enableReplay?: boolean;
 	enableTracing?: boolean;
 	enableFeedback?: boolean;
+	options?: BrowserOptions;
+}
+
+export interface UpdateSdkConfigMessage {
+	type: 'UPDATE_SDK_CONFIG';
+	dsn?: string;
+	debug?: boolean;
 	options?: BrowserOptions;
 }
 
@@ -37,3 +42,5 @@ export interface ReplayData {
 	session: Record<string, unknown> | undefined;
 	options: Record<string, unknown> | undefined;
 }
+
+export type MessageData = ClientMessage | InjectSdkMessage | InjectReplayMessage | UpdateSdkConfigMessage;
