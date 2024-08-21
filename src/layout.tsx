@@ -26,13 +26,16 @@ export const Layout = (props: ParentProps) => {
 								Config
 							</A>
 						</li>
+						<li>
+							<A href="/spotlight" end={true}>
+								Spotlight
+							</A>
+						</li>
 					</ul>
 				</nav>
 			</header>
 
-			<main>
-				<div>{props.children}</div>
-			</main>
+			<main>{props.children}</main>
 		</>
 	);
 };

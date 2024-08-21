@@ -7,6 +7,7 @@ import { isInjectReplayMessage, isInjectSdkMessage, isUpdateConfigMessage } from
 import { getReplayData } from './web-accessible-script/replay';
 import { injectReplay } from './web-accessible-script/injectReplay';
 import { updateSdkOptions } from './web-accessible-script/updateSdkOptions';
+import { interceptEnvelopes } from './web-accessible-script/interceptEnvelopes';
 
 /**
  * This file is injected by content-script.ts into the inspected page.
@@ -53,6 +54,8 @@ function sendUpdate(): void {
 setTimeout(() => {
 	sendUpdate();
 }, 1000);
+
+interceptEnvelopes();
 
 window.addEventListener('message', (event) => {
 	try {

@@ -39,14 +39,12 @@ browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 	const data = getMessageData(message);
 
 	if (isClientMessage(data)) {
-		console.log(data);
 		sdkInfoSignal[1](data.sdkMetadata?.sdk);
 		optionsSignal[1](data.options);
 		replaySignal[1](data.replay);
 		isLoadingSignal[1](false);
+		sendResponse();
 	}
-
-	sendResponse();
 });
 
 const tabId = browser.devtools.inspectedWindow.tabId;

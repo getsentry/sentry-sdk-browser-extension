@@ -1,4 +1,4 @@
-import { ClientMessage, InjectReplayMessage, InjectSdkMessage, MessageData, UpdateSdkConfigMessage } from '../types';
+import { ClientMessage, EnvelopeMessage, InjectReplayMessage, InjectSdkMessage, MessageData, UpdateSdkConfigMessage } from '../types';
 
 export function getMessageData(message: unknown): MessageData | undefined {
 	if (!message) {
@@ -45,6 +45,10 @@ export function isUpdateConfigMessage(message: any): message is UpdateSdkConfigM
 	return message && message.type === 'UPDATE_SDK_CONFIG';
 }
 
+export function isEnvelopeMessage(message: any): message is EnvelopeMessage {
+	return message && message.type === 'ENVELOPE';
+}
+
 function parseMessageJson(json: unknown): MessageData | undefined {
 	if (!json) {
 		return undefined;
@@ -67,7 +71,13 @@ function parseMessageJson(json: unknown): MessageData | undefined {
 }
 
 function getParsedMessageData(data: Record<string, unknown>): MessageData | undefined {
-	if (isClientMessage(data) || isInjectReplayMessage(data) || isInjectSdkMessage(data) || isUpdateConfigMessage(data)) {
+	if (
+		isClientMessage(data) ||
+		isInjectReplayMessage(data) ||
+		isInjectSdkMessage(data) ||
+		isUpdateConfigMessage(data) ||
+		isEnvelopeMessage(data)
+	) {
 		return data;
 	}
 

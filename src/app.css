@@ -31,7 +31,7 @@ ul {
 	padding-left: 1em;
 }
 
-main {
+main:not(:empty) {
 	padding: 1em;
 }
 
@@ -64,7 +64,6 @@ nav > ul {
 	margin: 0;
 	list-style: none;
 	display: flex;
-	gap: 0.5em;
 	flex-wrap: wrap;
 }
 
@@ -72,7 +71,6 @@ nav > ul > li > a {
 	color: #fff;
 	text-decoration: none;
 	padding: 0.5em 1em;
-	font-size: 1.2em;
 	display: block;
 	border-bottom: 3px solid transparent;
 	transition: border-bottom-color 0.2s ease-in-out;

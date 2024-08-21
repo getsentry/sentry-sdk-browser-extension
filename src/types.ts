@@ -33,6 +33,11 @@ export interface InjectReplayMessage {
 	replayOptions?: Parameters<typeof replayIntegration>[0];
 }
 
+export interface EnvelopeMessage {
+	type: 'ENVELOPE';
+	envelope: string;
+}
+
 export interface ReplayData {
 	replayId: string | undefined;
 	isEnabled: boolean;
@@ -42,4 +47,4 @@ export interface ReplayData {
 	options: Record<string, unknown> | undefined;
 }
 
-export type MessageData = ClientMessage | InjectSdkMessage | InjectReplayMessage | UpdateSdkConfigMessage;
+export type MessageData = ClientMessage | InjectSdkMessage | InjectReplayMessage | UpdateSdkConfigMessage | EnvelopeMessage;
