@@ -19,11 +19,8 @@ export function interceptEnvelopes(): undefined {
 }
 
 function interceptEnvelopesForClient(client: Client): void {
-	console.log('INTERCEPT ENVELOPES!');
 	client.on('beforeEnvelope', (envelope) => {
 		const serializedEnvelope = serializeEnvelope(envelope);
-
-		console.log('serialized envelope...', serializeEnvelope);
 
 		// We only handle string envelopes for now - we skip replay
 		if (typeof serializedEnvelope !== 'string') {
