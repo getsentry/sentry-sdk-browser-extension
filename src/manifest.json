@@ -1,4 +1,5 @@
 {
+	"name": "Sentry Browser SDK Debugger",
 	"{{chrome}}.manifest_version": 3,
 	"{{firefox}}.manifest_version": 2,
 	"icons": {
