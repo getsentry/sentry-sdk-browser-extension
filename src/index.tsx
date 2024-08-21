@@ -35,7 +35,11 @@ export const latestVersionResource = createResource(async () => {
 	return getLatestSdkVersion();
 });
 
-browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	if (sender.tab?.id !== browser.devtools.inspectedWindow.tabId) {
+		return;
+	}
+
 	const data = getMessageData(message);
 
 	if (isClientMessage(data)) {
