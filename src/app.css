@@ -49,7 +49,7 @@ header {
 }
 
 .header-logo {
-	height: 3em;
+	height: 2.5em;
 	width: auto;
 	display: block;
 	flex-grow: 0;
