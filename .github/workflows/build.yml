@@ -40,9 +40,11 @@ jobs:
           jq -r '.version |= "${{ steps.find_version.outputs.new_version }}"' tmp.json > src/manifest.json;
           rm -rf tmp.json
 
-      - run: yarn run build
+      - name: Build Chrome extension into dist/
+        run: yarn run build && mkdir -p extension
 
-      - uses: montudor/action-zip@v1
+      - name: Bundle Chrome extension into extension/chrome.zip
+        uses: montudor/action-zip@v1
         with:
           args: zip -qq -r extension/chrome.zip dist
 
