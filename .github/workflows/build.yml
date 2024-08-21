@@ -1,0 +1,115 @@
+name: Build & Publish
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'releases/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+
+      - run: yarn install --frozen-lockfile
+
+      - name: Fetch next version
+        uses: mathieudutour/github-tag-action@v6.1
+        id: find_version
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: main
+          dry_run: true
+
+      - name: Set package.json version to ${{ steps.find_version.outputs.new_tag }}
+        run: >
+          cp package.json tmp.json;
+          jq -r '.version |= "${{ steps.find_version.outputs.new_version }}"' tmp.json > package.json;
+          rm -rf tmp.json
+
+      - name: Set manifest.json version to ${{ steps.find_version.outputs.new_tag }}
+        run: >
+          cp source/manifest.json tmp.json;
+          jq -r '.version |= "${{ steps.find_version.outputs.new_version }}"' tmp.json > source/manifest.json;
+          rm -rf tmp.json
+
+      - run: yarn run lint
+
+      - run: yarn run build
+
+      - uses: actions/upload-artifact@v4.3.6
+        with:
+          name: extensions
+          path: extension/
+
+  package:
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.tag_version.outputs.new_tag }}
+
+    steps:
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+
+      - uses: actions/download-artifact@v4.1.8
+        with:
+          name: extensions
+          path: extension/
+
+      - name: Bump version and push tag
+        uses: mathieudutour/github-tag-action@v6.1
+        id: tag_version
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: main
+
+      - name: Create GitHub release tag ${{ steps.tag_version.outputs.new_tag }}
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+          artifacts: extension/chrome.zip, extension/edge.zip, extension/opera.zip
+
+  upload:
+    needs: package
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        command:
+          - chrome
+
+    steps:
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'package.json'
+
+      - uses: actions/download-artifact@v4.1.8
+        with:
+          name: extensions
+          path: extension/
+
+      # TODO: Skip this for now...
+      - name: Submit to Google
+        if: matrix.command == 'chrome' && true == false
+        run: npx chrome-webstore-upload-cli@2 upload --auto-publish --source extension/chrome.zip
+        env:
+          EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
+          CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.CHROME_REFRESH_TOKEN }}
