@@ -174,3 +174,7 @@ details {
 .error {
 	color: red;
 }
+
+.force-hidden {
+	display: none;
+}

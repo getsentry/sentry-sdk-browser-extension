@@ -760,10 +760,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@spotlightjs/overlay@npm:2.4.0-next.0":
-  version: 2.4.0-next.0
-  resolution: "@spotlightjs/overlay@npm:2.4.0-next.0"
-  checksum: 10c0/abe955e7cfeac5396c1dfc97dc87903c9b171cd37e0794c56a169e3a5346d7347fe740081aabddc99f390f27fa7ad6977144c9bbee1319ce6d7319d0e3a727e6
+"@spotlightjs/overlay@npm:2.4.0-next.4":
+  version: 2.4.0-next.4
+  resolution: "@spotlightjs/overlay@npm:2.4.0-next.4"
+  checksum: 10c0/f035334fa794070841c278ed48a043ff0ed0bab1043b16f3771efb2339c55faec34aba77d4d49aa2c4b3071469ed5fb0e1adb6ea743c13129c40a920ebc76588
   languageName: node
   linkType: hard
 
@@ -3245,7 +3245,7 @@ __metadata:
     "@sentry/types": "npm:^8.26.0"
     "@sentry/utils": "npm:^8.26.0"
     "@solidjs/router": "npm:^0.14.3"
-    "@spotlightjs/overlay": "npm:2.4.0-next.0"
+    "@spotlightjs/overlay": "npm:2.4.0-next.4"
     "@types/webextension-polyfill": "npm:^0.10.0"
     highlight.js: "npm:^11.10.0"
     prettier: "npm:^3.3.3"
