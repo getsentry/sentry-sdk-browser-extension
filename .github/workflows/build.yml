@@ -15,10 +15,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: 'package.json'
+      - name: Set up Volta & Node
+        uses: volta-cli/action@v4
 
       - run: yarn install --frozen-lockfile
 
@@ -58,10 +56,8 @@ jobs:
       new_tag: ${{ steps.tag_version.outputs.new_tag }}
 
     steps:
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: 'package.json'
+      - name: Set up Volta & Node
+        uses: volta-cli/action@v4
 
       - uses: actions/download-artifact@v4.1.8
         with:
@@ -94,10 +90,8 @@ jobs:
           - chrome
 
     steps:
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: 'package.json'
+      - name: Set up Volta & Node
+        uses: volta-cli/action@v4
 
       - uses: actions/download-artifact@v4.1.8
         with:
