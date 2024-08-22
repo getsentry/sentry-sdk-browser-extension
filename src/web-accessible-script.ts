@@ -23,7 +23,7 @@ function sendUpdate(): void {
 	const client = v8Client || hubClient;
 
 	const sdkMetadata = client?.getSdkMetadata();
-	const options = serializeOptions(client?.getOptions());
+	const options = serializeOptions(client, client?.getOptions());
 	const replay = client ? getReplayData(client) : undefined;
 
 	if (document.hidden) {

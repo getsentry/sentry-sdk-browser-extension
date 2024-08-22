@@ -1,7 +1,7 @@
-import { Integration, Options } from '@sentry/types';
+import type { Client, Integration, Options } from '@sentry/types';
 
-export function serializeOptions(options: Options | undefined): Record<string, unknown> | undefined {
-	if (!options) {
+export function serializeOptions(client: Client | undefined, options: Options | undefined): Record<string, unknown> | undefined {
+	if (!options || !client) {
 		return undefined;
 	}
 
@@ -27,7 +27,27 @@ export function serializeOptions(options: Options | undefined): Record<string, u
 		}
 	}
 
+	const allIntegrations = getIntegrations(client).map(serializeIntegration);
+
+	if (
+		!Array.isArray(opts.integrations) ||
+		JSON.stringify(allIntegrations.slice().sort()) !== JSON.stringify(opts.integrations.slice().sort())
+	) {
+		opts['[installedIntegrations]'] = allIntegrations;
+	}
+
 	return opts;
+}
+
+function getIntegrations(client: Client): Integration[] {
+	// This should never be minified, we keep this intact because Replay needs it
+	const integrationsHash = (client as any)['_integrations'] as undefined | Record<string, Integration>;
+
+	if (!integrationsHash) {
+		return [];
+	}
+
+	return Object.values(integrationsHash);
 }
 
 function serializeIntegration(integration: Integration): string {
