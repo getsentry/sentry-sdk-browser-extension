@@ -1,13 +1,14 @@
 {
 	"name": "sentry-sdk-browser-extension",
 	"private": true,
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
 		"compile": "tsc --noEmit",
 		"dev": "vite",
 		"build": "vite build",
-		"format": "prettier . --write"
+		"format": "prettier . --write",
+		"zip": "rm -rf extension && mkdir -p extension && zip -qq -r extension/chrome.zip dist"
 	},
 	"devDependencies": {
 		"@types/webextension-polyfill": "^0.10.0",
