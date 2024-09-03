@@ -4,6 +4,8 @@ import { execSync } from 'node:child_process';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import * as path from 'node:path';
 
+const BUNDLE_VARIANTS = ['bundle.tracing.replay.feedback.js', 'replay.js'];
+
 (async function run() {
 	const latestDownloadedVersion = latestDownloadedVersionInfo.latestVersion;
 
@@ -69,13 +71,41 @@ function getNewerVersions(versions: string[], { major, minor, patch }: { major: 
 }
 
 async function downloadVersion(version: string) {
-	const url = `https://browser.sentry-cdn.com/${version}/bundle.tracing.replay.feedback.js`;
+	for (const bundleFile of BUNDLE_VARIANTS) {
+		try {
+			await downloadBundleFile(version, bundleFile);
+		} catch (error) {
+			// Special case: Replay was not published before 8.27.0, so we use this instead for versions between...
+			if (error instanceof FetchError && bundleFile === 'replay.js' && error.statusCode === 403) {
+				console.warn(`replay.js not found for version ${version}, using 8.27.0 instead...`);
+				await downloadBundleFile('8.27.0', 'replay.js', version);
+			}
+		}
+	}
+}
+
+class FetchError extends Error {
+	public statusCode: number;
+
+	constructor(public response: Response) {
+		super(`Failed to fetch: ${response.status} ${response.statusText}`);
+		this.statusCode = response.status;
+	}
+}
+
+async function downloadBundleFile(version: string, bundleFile: string, storeAsVersion = version) {
+	const url = `https://browser.sentry-cdn.com/${version}/${bundleFile}`;
 
 	const res = await fetch(url);
+
+	if (!res.ok) {
+		throw new FetchError(res);
+	}
+
 	const body = await res.text();
 
-	mkdirSync(path.join(process.cwd(), `src/web-accessible-script/bundles/${version}`), { recursive: true });
-	writeFileSync(path.join(process.cwd(), `src/web-accessible-script/bundles/${version}/bundle.tracing.replay.feedback.js`), body, 'utf-8');
+	mkdirSync(path.join(process.cwd(), `src/web-accessible-script/bundles/${storeAsVersion}`), { recursive: true });
+	writeFileSync(path.join(process.cwd(), `src/web-accessible-script/bundles/${storeAsVersion}/${bundleFile}`), body, 'utf-8');
 }
 
 function updateLatestVersion(latestVersion: string) {
