@@ -1,7 +1,7 @@
 {
 	"name": "sentry-sdk-browser-extension",
 	"private": true,
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"type": "module",
 	"scripts": {
 		"compile": "tsc --noEmit",
@@ -28,7 +28,8 @@
 		"@spotlightjs/overlay": "2.4.0-next.4",
 		"highlight.js": "^11.10.0",
 		"solid-js": "^1.8.21",
-		"tsx": "^4.19.0"
+		"tsx": "^4.19.0",
+		"vite-plugin-static-copy": "^1.0.6"
 	},
 	"volta": {
 		"node": "22.6.0",

@@ -43,7 +43,7 @@ const BUNDLE_VARIANTS = ['bundle.tracing.replay.feedback.js', 'replay.js'];
 		return (parsedB.patch || 0) - (parsedA.patch || 0);
 	})[0];
 
-	updateLatestVersion(newLatestVersion);
+	updateVersions(newLatestVersion, newerVersions);
 })();
 
 function getNewerVersions(versions: string[], { major, minor, patch }: { major: number; minor: number; patch: number }): string[] {
@@ -71,6 +71,7 @@ function getNewerVersions(versions: string[], { major, minor, patch }: { major: 
 }
 
 async function downloadVersion(version: string) {
+	console.log(`Downloading version ${version}...`);
 	for (const bundleFile of BUNDLE_VARIANTS) {
 		try {
 			await downloadBundleFile(version, bundleFile);
@@ -108,10 +109,12 @@ async function downloadBundleFile(version: string, bundleFile: string, storeAsVe
 	writeFileSync(path.join(process.cwd(), `src/web-accessible-script/bundles/${storeAsVersion}/${bundleFile}`), body, 'utf-8');
 }
 
-function updateLatestVersion(latestVersion: string) {
+function updateVersions(latestVersion: string, newVersions: string[]) {
+	const previousVersions = latestDownloadedVersionInfo.versions;
+
 	writeFileSync(
 		path.join(process.cwd(), 'src/web-accessible-script/bundles/latestVersion.json'),
-		JSON.stringify({ latestVersion }),
+		JSON.stringify({ latestVersion, versions: Array.from(new Set([...previousVersions, ...newVersions])) }),
 		'utf-8',
 	);
 }

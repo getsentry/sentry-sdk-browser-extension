@@ -10,7 +10,7 @@
 	"host_permissions": ["https://*//", "http://*/*"],
 	"web_accessible_resources": [
 		{
-			"resources": ["src/web-accessible-script.js"],
+			"resources": ["src/web-accessible-script.js", "src/web-accessible-script/bundles/*/*.js"],
 			"matches": ["https://*/*", "http://*/*"]
 		}
 	]

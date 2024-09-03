@@ -1,23 +1,36 @@
 import browser from 'webextension-polyfill';
 import { InjectReplayMessage } from '../types';
-import { createSignal } from 'solid-js';
+import { createResource, createSignal } from 'solid-js';
 import type { replayIntegration } from '@sentry/browser';
 import { JsonTextInput } from './JsonTextInput';
+import { parseSemver } from '@sentry/utils';
+import { getAvailableSdkVersions, getLatestSdkVersion } from '../utils/sdkVersions';
 
-export function InjectReplay(props: { latestSdkVersion: string }) {
+export function InjectReplay(props: { sdkVersion: string }) {
 	const [replaysSessionSampleRate, setReplaysSessionSampleRate] = createSignal<number | undefined>(1);
 	const [replaysOnErrorSampleRate, setReplaysOnErrorSampleRate] = createSignal<number | undefined>(undefined);
 	const replaySignal = createSignal<Parameters<typeof replayIntegration>[0] | undefined>(undefined);
 
+	const [versionSignal] = createResource(() => {
+		return getFixedVersion(props.sdkVersion);
+	});
+
 	const submitForm = (event: Event) => {
 		event.preventDefault();
+
+		const version = versionSignal();
+
+		if (!version) {
+			console.error('Version not available');
+			return;
+		}
 
 		const data: InjectReplayMessage = {
 			type: 'INJECT_REPLAY',
 			replaysOnErrorSampleRate: replaysOnErrorSampleRate(),
 			replaysSessionSampleRate: replaysSessionSampleRate(),
 			replayOptions: replaySignal[0](),
-			version: props.latestSdkVersion,
+			version,
 		};
 
 		injectReplaySdk(data);
@@ -76,4 +89,21 @@ function injectReplaySdk(data: InjectReplayMessage) {
 		from: 'sentry/devtools',
 		json: data,
 	});
+}
+
+async function getFixedVersion(version: string): Promise<string> {
+	// SPECIAL CASES:
+	// 1. For any v7 version, we always use v7.119.0
+	// 2. For any unsupported v8 version, we use latest
+	const { major } = parseSemver(version);
+	if (major === 7) {
+		console.warn(`Using v7.119.0 bundle for any v7 release.`);
+		return '7.119.0';
+	} else if (major === 8 && !getAvailableSdkVersions().includes(version)) {
+		const latestVersion = getLatestSdkVersion();
+		console.warn(`Unsupported SDK version: ${version}. Using ${latestVersion} version instead.`);
+		return latestVersion;
+	}
+
+	return version;
 }

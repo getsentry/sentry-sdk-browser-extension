@@ -39,7 +39,7 @@ function WithoutReplay(sdkInfo: SdkInfo | undefined) {
 		<div>
 			<p>Replay is not installed.</p>
 
-			<div>{sdkInfo?.version ? <InjectReplay latestSdkVersion={sdkInfo.version} /> : <p>Could not detect SDK version.</p>}</div>
+			<div>{sdkInfo?.version ? <InjectReplay sdkVersion={sdkInfo.version} /> : <p>Could not detect SDK version.</p>}</div>
 		</div>
 	);
 }
