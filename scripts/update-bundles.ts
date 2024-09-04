@@ -17,7 +17,7 @@ const BUNDLE_VARIANTS = ['bundle.tracing.replay.feedback.js', 'replay.js'];
 		throw new Error(`Could not parse latest downloaded version: ${latestDownloadedVersion}`);
 	}
 
-	const newerVersions = getNewerVersions(versions, { major: 7, minor: 98, patch: 0 });
+	const newerVersions = getNewerVersions(versions, { major, minor, patch });
 
 	if (newerVersions.length === 0) {
 		console.log('No new versions available, nothing to do.');
