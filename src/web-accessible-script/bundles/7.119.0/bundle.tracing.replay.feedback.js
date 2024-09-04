@@ -1,5 +1,7 @@
-/*! @sentry/browser & @sentry/tracing & @sentry/replay & @sentry/feedback 7.117.0 (368ec6b) | https://github.com/getsentry/sentry-javascript */
+/*! @sentry/browser & @sentry/tracing & @sentry/replay & @sentry/feedback 7.119.0 (f58bf69) | https://github.com/getsentry/sentry-javascript */
 var Sentry = (function (exports) {
+
+  exports = window.Sentry || {};
 
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const objectToString = Object.prototype.toString;
@@ -5803,7 +5805,7 @@ var Sentry = (function (exports) {
     };
   }
 
-  const SDK_VERSION = '7.117.0';
+  const SDK_VERSION = '7.119.0';
 
   /**
    * API compatibility version of this hub.
@@ -9692,10 +9694,12 @@ The transaction will not be sampled. Please use the ${configInstrumenter} instru
     /**
      * @inheritDoc
      */
-     recordDroppedEvent(reason, category, _event) {
-      // Note: we use `event` in replay, where we overwrite this hook.
-
+     recordDroppedEvent(reason, category, eventOrCount) {
       if (this._options.sendClientReports) {
+        // TODO v9: We do not need the `event` passed as third argument anymore, and can possibly remove this overload
+        // If event is passed as third argument, we assume this is a count of 1
+        const count = typeof eventOrCount === 'number' ? eventOrCount : 1;
+
         // We want to track each category (error, transaction, session, replay_event) separately
         // but still keep the distinction between different type of outcomes.
         // We could use nested maps, but it's much easier to read and type this way.
@@ -9703,10 +9707,8 @@ The transaction will not be sampled. Please use the ${configInstrumenter} instru
         // would be `Partial<Record<SentryRequestType, Partial<Record<Outcome, number>>>>`
         // With typescript 4.1 we could even use template literal types
         const key = `${reason}:${category}`;
-        logger.log(`Adding outcome: "${key}"`);
-
-        // The following works because undefined + 1 === NaN and NaN is falsy
-        this._outcomes[key] = this._outcomes[key] + 1 || 1;
+        logger.log(`Recording outcome: "${key}"${count > 1 ? ` (${count} times)` : ''}`);
+        this._outcomes[key] = (this._outcomes[key] || 0) + count;
       }
     }
 
@@ -9977,12 +9979,30 @@ The transaction will not be sampled. Please use the ${configInstrumenter} instru
         .then(processedEvent => {
           if (processedEvent === null) {
             this.recordDroppedEvent('before_send', dataCategory, event);
+            if (isTransaction) {
+              const spans = event.spans || [];
+              // the transaction itself counts as one span, plus all the child spans that are added
+              const spanCount = 1 + spans.length;
+              this.recordDroppedEvent('before_send', 'span', spanCount);
+            }
             throw new SentryError(`${beforeSendLabel} returned \`null\`, will not send event.`, 'log');
           }
 
           const session = scope && scope.getSession();
           if (!isTransaction && session) {
             this._updateSessionFromEvent(session, processedEvent);
+          }
+
+          if (isTransaction) {
+            const spanCountBefore =
+              (processedEvent.sdkProcessingMetadata && processedEvent.sdkProcessingMetadata.spanCountBeforeProcessing) ||
+              0;
+            const spanCountAfter = processedEvent.spans ? processedEvent.spans.length : 0;
+
+            const droppedSpanCount = spanCountBefore - spanCountAfter;
+            if (droppedSpanCount > 0) {
+              this.recordDroppedEvent('before_send', 'span', droppedSpanCount);
+            }
           }
 
           // None of the Sentry built event processor will update transaction name,
@@ -10113,6 +10133,15 @@ The transaction will not be sampled. Please use the ${configInstrumenter} instru
     }
 
     if (isTransactionEvent$1(event) && beforeSendTransaction) {
+      if (event.spans) {
+        // We store the # of spans before processing in SDK metadata,
+        // so we can compare it afterwards to determine how many spans were dropped
+        const spanCountBefore = event.spans.length;
+        event.sdkProcessingMetadata = {
+          ...event.sdkProcessingMetadata,
+          spanCountBeforeProcessing: spanCountBefore,
+        };
+      }
       return beforeSendTransaction(event, hint);
     }
 
