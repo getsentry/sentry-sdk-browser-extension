@@ -18,5 +18,5 @@
 		"jsxImportSource": "solid-js",
 		"jsx": "preserve"
 	},
-	"include": ["src"]
+	"include": ["src", "scripts"]
 }

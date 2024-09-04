@@ -3,6 +3,7 @@ import { isLoadingSignal, replaySignal, sdkInfoSignal } from '..';
 import { InjectReplay } from '../components/InjectReplay';
 import { OptionsTable } from '../components/OptionsTable';
 import { ReplayData } from '../types';
+import { getAvailableSdkVersions, getLatestSdkVersion } from '../utils/sdkVersions';
 
 export default function Replay() {
 	const [replay] = replaySignal;
@@ -35,11 +36,29 @@ function WithReplay(replay: ReplayData) {
 }
 
 function WithoutReplay(sdkInfo: SdkInfo | undefined) {
+	const version = sdkInfo?.version;
+
 	return (
 		<div>
 			<p>Replay is not installed.</p>
 
-			<div>{sdkInfo?.version ? <InjectReplay latestSdkVersion={sdkInfo.version} /> : <p>Could not detect SDK version.</p>}</div>
+			<div>
+				{version ? (
+					isSupportedVersion(version) ? (
+						<InjectReplay sdkVersion={version} />
+					) : (
+						<p>
+							Detected SDK version {version} is not compatible. Only v7.99.0 to v{getLatestSdkVersion()} are supported.
+						</p>
+					)
+				) : (
+					<p>Could not detect SDK version.</p>
+				)}
+			</div>
 		</div>
 	);
+}
+
+function isSupportedVersion(version: string): boolean {
+	return getAvailableSdkVersions().includes(version);
 }

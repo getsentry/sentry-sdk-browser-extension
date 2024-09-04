@@ -13,3 +13,7 @@ It allows you to:
 - Inject the Replay SDK if it is not yet installed.
 - Update the config of the SDK.
 - Use Spotlight directly in the browser to see events and traces sent to Sentry.
+
+## Development
+
+Bundles have to be downloaded & commited. You can run `yarn update-bundles` to fetch any new CDN bundles. Then, you need to release the extension.

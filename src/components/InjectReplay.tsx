@@ -4,10 +4,12 @@ import { createSignal } from 'solid-js';
 import type { replayIntegration } from '@sentry/browser';
 import { JsonTextInput } from './JsonTextInput';
 
-export function InjectReplay(props: { latestSdkVersion: string }) {
+export function InjectReplay(props: { sdkVersion: string }) {
 	const [replaysSessionSampleRate, setReplaysSessionSampleRate] = createSignal<number | undefined>(1);
 	const [replaysOnErrorSampleRate, setReplaysOnErrorSampleRate] = createSignal<number | undefined>(undefined);
 	const replaySignal = createSignal<Parameters<typeof replayIntegration>[0] | undefined>(undefined);
+
+	const version = props.sdkVersion;
 
 	const submitForm = (event: Event) => {
 		event.preventDefault();
@@ -17,7 +19,7 @@ export function InjectReplay(props: { latestSdkVersion: string }) {
 			replaysOnErrorSampleRate: replaysOnErrorSampleRate(),
 			replaysSessionSampleRate: replaysSessionSampleRate(),
 			replayOptions: replaySignal[0](),
-			version: props.latestSdkVersion,
+			version,
 		};
 
 		injectReplaySdk(data);

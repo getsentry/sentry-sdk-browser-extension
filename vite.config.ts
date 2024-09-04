@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import webExtension, { readJsonFile } from 'vite-plugin-web-extension';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import solidPlugin from 'vite-plugin-solid';
 
 function generateManifest() {
@@ -21,8 +22,18 @@ export default defineConfig({
 			webExtConfig: {
 				startUrl: 'https://sentry.io',
 			},
+			disableAutoLaunch: true,
 			additionalInputs: ['src/index.html', 'src/index.tsx', 'src/app.css', 'src/content-script.ts', 'src/web-accessible-script.ts'],
 		}),
 		solidPlugin(),
+		viteStaticCopy({
+			structured: true,
+			targets: [
+				{
+					src: 'src/web-accessible-script/bundles/',
+					dest: '/',
+				},
+			],
+		}),
 	],
 });

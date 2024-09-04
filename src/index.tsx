@@ -12,7 +12,7 @@ import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import typescript from 'highlight.js/lib/languages/typescript';
 import { createResource, createSignal } from 'solid-js';
-import { getLatestSdkVersion } from './utils/getLatestSdkVersion';
+import { getLatestSdkVersion } from './utils/sdkVersions';
 import { Options, SdkInfo } from '@sentry/types';
 import { getMessageData, isClientMessage } from './utils/getMessageData';
 import { ReplayData } from './types';

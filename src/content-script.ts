@@ -32,7 +32,19 @@ browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
 		const data = message.json;
 
-		if (isInjectSdkMessage(data) || isInjectReplayMessage(data) || isUpdateConfigMessage(data)) {
+		if (isInjectSdkMessage(data)) {
+			const scriptPath = `src/web-accessible-script/bundles/${data.version}/bundle.tracing.replay.feedback.js`;
+			injectScript(browser.runtime.getURL(scriptPath), 'body');
+			window.postMessage({ from: 'sentry/content-script.js', json: data });
+		}
+
+		if (isInjectReplayMessage(data)) {
+			const scriptPath = `src/web-accessible-script/bundles/${data.version}/replay.js`;
+			injectScript(browser.runtime.getURL(scriptPath), 'body');
+			window.postMessage({ from: 'sentry/content-script.js', json: data });
+		}
+
+		if (isUpdateConfigMessage(data)) {
 			window.postMessage({ from: 'sentry/content-script.js', json: data });
 		}
 	} finally {
