@@ -93,13 +93,9 @@ function injectReplaySdk(data: InjectReplayMessage) {
 
 async function getFixedVersion(version: string): Promise<string> {
 	// SPECIAL CASES:
-	// 1. For any v7 version, we always use v7.119.0
-	// 2. For any unsupported v8 version, we use latest
+	// 1. For any unsupported v8 version, we use latest
 	const { major } = parseSemver(version);
-	if (major === 7) {
-		console.warn(`Using v7.119.0 bundle for any v7 release.`);
-		return '7.119.0';
-	} else if (major === 8 && !getAvailableSdkVersions().includes(version)) {
+	if (major === 8 && !getAvailableSdkVersions().includes(version)) {
 		const latestVersion = getLatestSdkVersion();
 		console.warn(`Unsupported SDK version: ${version}. Using ${latestVersion} version instead.`);
 		return latestVersion;

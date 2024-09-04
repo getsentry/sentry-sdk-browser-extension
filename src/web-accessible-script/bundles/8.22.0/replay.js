@@ -194,7 +194,7 @@ function stringMatchesSomePattern(
   return patterns.some(pattern => isMatchingPattern(testString, pattern, requireExactStringMatch));
 }
 
-const SDK_VERSION = '8.27.0';
+const SDK_VERSION = '8.22.0';
 
 /** Get's the global object for the current JavaScript runtime */
 const GLOBAL_OBJ = globalThis ;

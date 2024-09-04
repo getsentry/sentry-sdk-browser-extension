@@ -17,7 +17,7 @@ const BUNDLE_VARIANTS = ['bundle.tracing.replay.feedback.js', 'replay.js'];
 		throw new Error(`Could not parse latest downloaded version: ${latestDownloadedVersion}`);
 	}
 
-	const newerVersions = getNewerVersions(versions, { major, minor, patch });
+	const newerVersions = getNewerVersions(versions, { major: 7, minor: 98, patch: 0 });
 
 	if (newerVersions.length === 0) {
 		console.log('No new versions available, nothing to do.');
@@ -103,7 +103,11 @@ async function downloadBundleFile(version: string, bundleFile: string, storeAsVe
 		throw new FetchError(res);
 	}
 
-	const body = await res.text();
+	let body = await res.text();
+
+	if (storeAsVersion !== version) {
+		body = body.replace(`const SDK_VERSION = '${version}';`, `const SDK_VERSION = '${storeAsVersion}';`);
+	}
 
 	mkdirSync(path.join(process.cwd(), `src/web-accessible-script/bundles/${storeAsVersion}`), { recursive: true });
 	writeFileSync(path.join(process.cwd(), `src/web-accessible-script/bundles/${storeAsVersion}/${bundleFile}`), body, 'utf-8');
