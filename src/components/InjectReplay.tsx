@@ -21,7 +21,7 @@ export function InjectReplay(props: { sdkVersion: string }) {
 		const version = versionSignal();
 
 		if (!version) {
-			console.error('Version not available');
+			window.alert('Version not available');
 			return;
 		}
 
@@ -91,14 +91,19 @@ function injectReplaySdk(data: InjectReplayMessage) {
 	});
 }
 
-async function getFixedVersion(version: string): Promise<string> {
+async function getFixedVersion(version: string): Promise<string | undefined> {
 	// SPECIAL CASES:
 	// 1. For any unsupported v8 version, we use latest
-	const { major } = parseSemver(version);
+	const { major, minor } = parseSemver(version);
 	if (major === 8 && !getAvailableSdkVersions().includes(version)) {
 		const latestVersion = getLatestSdkVersion();
 		console.warn(`Unsupported SDK version: ${version}. Using ${latestVersion} version instead.`);
 		return latestVersion;
+	}
+
+	if (major === 7 && (minor || 0) < 99) {
+		console.error(`Unsupported SDK version: ${version}. Please use a version >= 7.99.0`);
+		return undefined;
 	}
 
 	return version;
