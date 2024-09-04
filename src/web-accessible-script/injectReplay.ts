@@ -20,11 +20,11 @@ export async function injectReplay(client: SentryType.BrowserClient, data: Injec
 			client.getOptions().replaysSessionSampleRate = data.replaysSessionSampleRate;
 			client.getOptions().replaysOnErrorSampleRate = data.replaysOnErrorSampleRate;
 
-			client.addIntegration(
-				Sentry.replayIntegration({
-					...data.replayOptions,
-				}),
-			);
+			const replay = Sentry.replayIntegration({
+				...data.replayOptions,
+			});
+
+			client.addIntegration(replay);
 
 			console.log('Replay was injected successfully');
 
