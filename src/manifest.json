@@ -6,7 +6,7 @@
 		"48": "sentry-icon-48.png"
 	},
 	"devtools_page": "src/devtools.html",
-	"permissions": ["scripting", "activeTab"],
+	"permissions": ["scripting"],
 	"host_permissions": ["https://*//", "http://*/*"],
 	"web_accessible_resources": [
 		{
