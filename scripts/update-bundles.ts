@@ -44,6 +44,8 @@ const BUNDLE_VARIANTS = ['bundle.tracing.replay.feedback.js', 'replay.js'];
 	})[0];
 
 	updateVersions(newLatestVersion, newerVersions);
+
+	console.log(`Updated to latest version ${newLatestVersion}`);
 })();
 
 function getNewerVersions(versions: string[], { major, minor, patch }: { major: number; minor: number; patch: number }): string[] {

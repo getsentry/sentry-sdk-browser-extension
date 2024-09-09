@@ -1,0 +1,52 @@
+name: 'Update CDN Bundles'
+
+on:
+  schedule:
+    # Run every day at midnight
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  update_cdn_bundles:
+    name: Update CDN Bundles
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out current commit
+        uses: actions/checkout@v4
+
+      - name: Set up Volta & Node
+        uses: volta-cli/action@v4
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Update CDN Bundles
+        run: yarn update-bundles
+
+      - name: Get latest version
+        id: latest_version
+        uses: ActionsTools/read-json-action@v1.0.5
+        with:
+          file_path: 'src/web-accessible-script/bundles/latestVersion.json'
+          prop_path: 'latestVersion'
+
+      - name: Create PR with changes
+        id: open-pr
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
+        with:
+          commit-message: 'feat: Update CDN Bundles for v${{ steps.latest_version.outputs.value }}'
+          title: 'feat: Update CDN Bundles for v${{ steps.latest_version.outputs.value }}'
+          branch: 'update-bundles/v${{ steps.latest_version.outputs.value }}'
+          delete-branch: true
+          body: 'This PR updates the CDN bundles to v${{ steps.latest_version.outputs.value }}.'
+
+      - name: Enable automerge for PR
+        if: steps.open-pr.outputs.pull-request-number  != ''
+        run: gh pr merge --merge --auto "${{ steps.open-pr.outputs.pull-request-number  }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
