@@ -102,9 +102,8 @@ jobs:
           name: extensions
           path: extension/
 
-      # TODO: Skip this for now...
       - name: Submit to Google
-        if: matrix.command == 'chrome' && true == false
+        if: matrix.command == 'chrome'
         run: npx chrome-webstore-upload-cli@2 upload --auto-publish --source extension/chrome.zip
         env:
           EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
