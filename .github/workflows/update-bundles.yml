@@ -49,4 +49,6 @@ jobs:
         if: steps.open-pr.outputs.pull-request-number  != ''
         run: gh pr merge --squash --auto "${{ steps.open-pr.outputs.pull-request-number  }}"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Using GH_ACTION_PAT instead of GITHUB_TOKEN
+          # Otherwise, this will not trigger the `build` workflow
+          GH_TOKEN: ${{ secrets.GH_ACTION_PAT }}
