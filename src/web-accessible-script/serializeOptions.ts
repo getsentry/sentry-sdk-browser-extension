@@ -36,6 +36,11 @@ export function serializeOptions(client: Client | undefined, options: Options | 
 		opts['[installedIntegrations]'] = allIntegrations;
 	}
 
+	// Ensure we properly serialize RegExp values
+	if (Array.isArray(options.tracePropagationTargets)) {
+		opts.tracePropagationTargets = options.tracePropagationTargets.map((target) => `${target}`);
+	}
+
 	return opts;
 }
 
