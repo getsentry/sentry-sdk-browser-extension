@@ -1,4 +1,4 @@
-import { normalize } from '@sentry/utils';
+import { normalize } from '@sentry/core';
 import { getLegacyHub } from './web-accessible-script/getLegacyHub';
 import { getV8Client } from './web-accessible-script/getV8Client';
 import { serializeOptions } from './web-accessible-script/serializeOptions';
