@@ -30,6 +30,7 @@ export const sdkInfoSignal = createSignal<SdkInfo | undefined>(undefined);
 export const optionsSignal = createSignal<Options | undefined>(undefined);
 export const replaySignal = createSignal<ReplayData | undefined>(undefined);
 export const isLoadingSignal = createSignal(true);
+export const isEnabledSignal = createSignal(false);
 
 export const latestVersionResource = createResource(async () => {
 	return getLatestSdkVersion();
@@ -46,6 +47,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		sdkInfoSignal[1](data.sdkMetadata?.sdk);
 		optionsSignal[1](data.options);
 		replaySignal[1](data.replay);
+		isEnabledSignal[1](data.isEnabled);
 		isLoadingSignal[1](false);
 		sendResponse();
 	}
