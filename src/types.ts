@@ -1,4 +1,4 @@
-import type { SdkMetadata } from '@sentry/types';
+import type { SdkMetadata } from '@sentry/core';
 import type { BrowserOptions, replayIntegration } from '@sentry/browser';
 
 export interface ClientMessage {

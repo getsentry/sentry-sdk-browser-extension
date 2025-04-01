@@ -1,4 +1,5 @@
-import { Options, SdkInfo } from '@sentry/types';
+import type { SdkInfo } from '@sentry/core';
+import type { BrowserOptions } from '@sentry/browser';
 import { InjectSdk } from '../components/InjectSdk';
 import { isLoadingSignal, isEnabledSignal, latestVersionResource, optionsSignal, sdkInfoSignal } from '..';
 import { OptionsTable } from '../components/OptionsTable';
@@ -17,14 +18,14 @@ function Loading() {
 	return <div>Fetching SDK setup..</div>;
 }
 
-function Loaded(sdkInfo: SdkInfo | undefined, options: Options | undefined, latestVersion: string | undefined, isEnabled: boolean) {
+function Loaded(sdkInfo: SdkInfo | undefined, options: BrowserOptions | undefined, latestVersion: string | undefined, isEnabled: boolean) {
 	if (sdkInfo && options) {
 		return WithSdk(sdkInfo, options, latestVersion, isEnabled);
 	}
 	return WithoutSdk(latestVersion);
 }
 
-function WithSdk(sdkInfo: SdkInfo, options: Options, latestVersion: string | undefined, isEnabled: boolean) {
+function WithSdk(sdkInfo: SdkInfo, options: BrowserOptions, latestVersion: string | undefined, isEnabled: boolean) {
 	const firstPackage = sdkInfo.packages?.length === 1 ? sdkInfo.packages[0] : undefined;
 
 	return (

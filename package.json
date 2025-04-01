@@ -21,9 +21,8 @@
 		"webextension-polyfill": "^0.10.0"
 	},
 	"dependencies": {
-		"@sentry/browser": "^8.26.0",
-		"@sentry/types": "^8.26.0",
-		"@sentry/utils": "^8.26.0",
+		"@sentry/browser": "^9.10.1",
+		"@sentry/core": "^9.10.1",
 		"@solidjs/router": "^0.14.3",
 		"@spotlightjs/overlay": "2.4.0-next.4",
 		"highlight.js": "^11.10.0",

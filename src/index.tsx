@@ -7,13 +7,12 @@ import { render } from 'solid-js/web';
 import { HashRouter } from '@solidjs/router';
 import { routes } from './routes';
 import { Layout } from './layout';
-
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import typescript from 'highlight.js/lib/languages/typescript';
 import { createResource, createSignal } from 'solid-js';
 import { getLatestSdkVersion } from './utils/sdkVersions';
-import { Options, SdkInfo } from '@sentry/types';
+import { BrowserOptions, SdkInfo } from '@sentry/browser';
 import { getMessageData, isClientMessage } from './utils/getMessageData';
 import { ReplayData } from './types';
 
@@ -27,7 +26,7 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 }
 
 export const sdkInfoSignal = createSignal<SdkInfo | undefined>(undefined);
-export const optionsSignal = createSignal<Options | undefined>(undefined);
+export const optionsSignal = createSignal<BrowserOptions | undefined>(undefined);
 export const replaySignal = createSignal<ReplayData | undefined>(undefined);
 export const isLoadingSignal = createSignal(true);
 export const isEnabledSignal = createSignal(false);
