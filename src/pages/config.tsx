@@ -1,7 +1,7 @@
-import { SdkInfo } from '@sentry/types';
+import type { SdkInfo } from '@sentry/core';
 import { isLoadingSignal, optionsSignal, sdkInfoSignal } from '..';
 import { OptionsTable } from '../components/OptionsTable';
-import { BrowserOptions } from '@sentry/browser';
+import type { BrowserOptions } from '@sentry/browser';
 import { UpdateConfig } from '../components/UpdateConfig';
 
 export default function Config() {
