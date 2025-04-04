@@ -2,13 +2,13 @@ import { Client } from '@sentry/types';
 import { EnvelopeMessage } from '../types';
 import { serializeEnvelope } from '@sentry/utils';
 import { getLegacyHub } from './getLegacyHub';
-import { getV8Client } from './getV8Client';
+import { getClient } from './getClient';
 
 export function interceptEnvelopes(): undefined {
 	const hubClient = getLegacyHub();
-	const v8Client = getV8Client();
+	const _client = getClient();
 
-	const client = v8Client || hubClient;
+	const client = _client || hubClient;
 
 	// Try to connect again in 1s, until we actually get a client
 	if (client) {

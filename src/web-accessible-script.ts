@@ -1,6 +1,6 @@
 import { normalize } from '@sentry/utils';
 import { getLegacyHub } from './web-accessible-script/getLegacyHub';
-import { getV8Client } from './web-accessible-script/getV8Client';
+import { getClient } from './web-accessible-script/getClient';
 import { serializeOptions } from './web-accessible-script/serializeOptions';
 import { injectSentrySdk } from './web-accessible-script/injectSentry';
 import { isInjectReplayMessage, isInjectSdkMessage, isUpdateConfigMessage } from './utils/getMessageData';
@@ -18,13 +18,14 @@ import { interceptEnvelopes } from './web-accessible-script/interceptEnvelopes';
 
 function sendUpdate(): void {
 	const hubClient = getLegacyHub();
-	const v8Client = getV8Client();
+	const _client = getClient();
 
-	const client = v8Client || hubClient;
+	const client = _client || hubClient;
 
 	const sdkMetadata = client?.getSdkMetadata();
 	const options = serializeOptions(client, client?.getOptions());
 	const replay = client ? getReplayData(client) : undefined;
+	const isEnabled = !!client && client?.getOptions()?.enabled !== false && !!client?.getTransport();
 
 	if (document.hidden) {
 		return;
@@ -40,6 +41,7 @@ function sendUpdate(): void {
 						sdkMetadata,
 						options,
 						replay,
+						isEnabled,
 					}),
 				),
 			},
@@ -72,9 +74,9 @@ window.addEventListener('message', (event) => {
 
 		if (isInjectReplayMessage(data)) {
 			const hubClient = getLegacyHub();
-			const v8Client = getV8Client();
+			const _client = getClient();
 
-			const client = v8Client || hubClient;
+			const client = _client || hubClient;
 
 			if (client) {
 				injectReplay(client, data).then(() => sendUpdate());
@@ -83,9 +85,9 @@ window.addEventListener('message', (event) => {
 
 		if (isUpdateConfigMessage(data)) {
 			const hubClient = getLegacyHub();
-			const v8Client = getV8Client();
+			const _client = getClient();
 
-			const client = v8Client || hubClient;
+			const client = _client || hubClient;
 
 			if (client) {
 				updateSdkOptions(client, data);

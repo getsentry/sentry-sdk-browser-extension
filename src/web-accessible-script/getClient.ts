@@ -13,7 +13,7 @@ interface WindowWithVersionedCarrier extends Window {
 	>;
 }
 
-export function getV8Client(): BrowserClient | undefined {
+export function getClient(): BrowserClient | undefined {
 	const currentVersion = (window as WindowWithVersionedCarrier).__SENTRY__?.version;
 
 	if (!currentVersion) {
