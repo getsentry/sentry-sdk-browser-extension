@@ -1,7 +1,6 @@
 import { BrowserClient, BrowserOptions } from '@sentry/browser';
 import { UpdateSdkConfigMessage } from '../types';
-import { makeDsn, urlEncode } from '@sentry/utils';
-import { DsnComponents, SdkInfo } from '@sentry/types';
+import { makeDsn, DsnComponents, SdkInfo } from '@sentry/core';
 
 export function updateSdkOptions(client: BrowserClient, data: UpdateSdkConfigMessage) {
 	// We mutate the existing options...
@@ -117,11 +116,22 @@ function _getIngestEndpoint(dsn: DsnComponents): string {
 
 /** Returns a URL-encoded string with auth config suitable for a query string. */
 function _encodedAuth(dsn: DsnComponents, sdkInfo: SdkInfo | undefined): string {
-	return urlEncode({
-		// We send only the minimum set of required information. See
-		// https://github.com/getsentry/sentry-javascript/issues/2572.
-		sentry_key: dsn.publicKey,
-		sentry_version: SENTRY_API_VERSION,
-		...(sdkInfo && { sentry_client: `${sdkInfo.name}/${sdkInfo.version}` }),
-	});
+	const dsnKey = dsn.publicKey;
+	const sentryClient = sdkInfo ? `${sdkInfo.name}/${sdkInfo.version}` : '';
+
+	const parts = [];
+
+	if (dsnKey) {
+		parts.push(`sentry_key=${encodeURIComponent(dsnKey)}`);
+	}
+
+	parts.push(`sentry_version=${encodeURIComponent(SENTRY_API_VERSION)}`);
+
+	if (sentryClient) {
+		parts.push(`sentry_client=${encodeURIComponent(sentryClient)}`);
+	}
+
+	// We send only the minimum set of required information. See
+	// https://github.com/getsentry/sentry-javascript/issues/2572.
+	return parts.join('&');
 }

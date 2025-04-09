@@ -1,4 +1,4 @@
-import { SdkInfo } from '@sentry/types';
+import type { SdkInfo } from '@sentry/core';
 import { isLoadingSignal, replaySignal, sdkInfoSignal } from '..';
 import { InjectReplay } from '../components/InjectReplay';
 import { OptionsTable } from '../components/OptionsTable';

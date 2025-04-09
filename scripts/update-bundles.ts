@@ -1,4 +1,4 @@
-import { parseSemver } from '@sentry/utils';
+import { parseSemver } from '@sentry/core';
 import latestDownloadedVersionInfo from '../src/web-accessible-script/bundles/latestVersion.json';
 import { execSync } from 'node:child_process';
 import { writeFileSync, mkdirSync } from 'node:fs';
