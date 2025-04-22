@@ -1,29 +1,30 @@
 import { Options, SdkInfo } from '@sentry/types';
 import { InjectSdk } from '../components/InjectSdk';
-import { isLoadingSignal, latestVersionResource, optionsSignal, sdkInfoSignal } from '..';
+import { isLoadingSignal, isEnabledSignal, latestVersionResource, optionsSignal, sdkInfoSignal } from '..';
 import { OptionsTable } from '../components/OptionsTable';
 
 export default function Home() {
 	const [sdkInfo] = sdkInfoSignal;
 	const [options] = optionsSignal;
 	const [isLoading] = isLoadingSignal;
+	const [isEnabled] = isEnabledSignal;
 	const [latestVersion] = latestVersionResource;
 
-	return <section>{isLoading() ? Loading() : Loaded(sdkInfo(), options(), latestVersion())}</section>;
+	return <section>{isLoading() ? Loading() : Loaded(sdkInfo(), options(), latestVersion(), isEnabled())}</section>;
 }
 
 function Loading() {
 	return <div>Fetching SDK setup..</div>;
 }
 
-function Loaded(sdkInfo: SdkInfo | undefined, options: Options | undefined, latestVersion: string | undefined) {
+function Loaded(sdkInfo: SdkInfo | undefined, options: Options | undefined, latestVersion: string | undefined, isEnabled: boolean) {
 	if (sdkInfo && options) {
-		return WithSdk(sdkInfo, options, latestVersion);
+		return WithSdk(sdkInfo, options, latestVersion, isEnabled);
 	}
 	return WithoutSdk(latestVersion);
 }
 
-function WithSdk(sdkInfo: SdkInfo, options: Options, latestVersion: string | undefined) {
+function WithSdk(sdkInfo: SdkInfo, options: Options, latestVersion: string | undefined, isEnabled: boolean) {
 	const firstPackage = sdkInfo.packages?.length === 1 ? sdkInfo.packages[0] : undefined;
 
 	return (
@@ -40,6 +41,12 @@ function WithSdk(sdkInfo: SdkInfo, options: Options, latestVersion: string | und
 					</>
 				)}
 			</p>
+
+			{!isEnabled && (
+				<p>
+					<strong>SDK is disabled</strong>
+				</p>
+			)}
 
 			<OptionsTable options={options as Record<string, unknown>} />
 		</>

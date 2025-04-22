@@ -6,6 +6,7 @@ export interface ClientMessage {
 	sdkMetadata: SdkMetadata;
 	options: BrowserOptions;
 	replay: ReplayData | undefined;
+	isEnabled: boolean;
 }
 
 export interface InjectSdkMessage {
