@@ -13,7 +13,7 @@ permissions:
 jobs:
   update_cdn_bundles:
     name: Update CDN Bundles
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Check out current commit
