@@ -1,6 +1,5 @@
-import { Client } from '@sentry/types';
 import { EnvelopeMessage } from '../types';
-import { serializeEnvelope } from '@sentry/utils';
+import { serializeEnvelope, Client } from '@sentry/core';
 import { getLegacyHub } from './getLegacyHub';
 import { getClient } from './getClient';
 
