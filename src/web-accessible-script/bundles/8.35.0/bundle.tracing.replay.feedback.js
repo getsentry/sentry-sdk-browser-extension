@@ -14775,11 +14775,7 @@ var Sentry = (function (exports) {
   }
 
   function getScriptURL(bundle) {
-    const client = getClient();
-    const options = client && client.getOptions();
-    const baseURL = (options && options.cdnBaseUrl) || 'https://browser.sentry-cdn.com';
-
-    return new URL(`/${SDK_VERSION}/${bundle}.min.js`, baseURL).toString();
+    throw new Error('Cannot load dynamically from the browser extension');
   }
 
   /**
