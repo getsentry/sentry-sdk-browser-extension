@@ -107,6 +107,10 @@ async function downloadBundleFile(version: string, bundleFile: string, storeAsVe
 
 	let body = await res.text();
 
+	// This leads to the extension not being accepted by the Chrome Web Store :(
+	// So no lazyLoadIntegration, basically!
+	body = removeDynamicUrl(body);
+
 	if (storeAsVersion !== version) {
 		body = body.replace(`const SDK_VERSION = '${version}';`, `const SDK_VERSION = '${storeAsVersion}';`);
 	}
@@ -122,5 +126,22 @@ function updateVersions(latestVersion: string, newVersions: string[]) {
 		path.join(process.cwd(), 'src/web-accessible-script/bundles/latestVersion.json'),
 		JSON.stringify({ latestVersion, versions: Array.from(new Set([...previousVersions, ...newVersions])) }),
 		'utf-8',
+	);
+}
+
+function removeDynamicUrl(body: string) {
+	const originalFn = /function getScriptURL\(bundle\) {(\s|\S)*?\s+}\n/;
+	if (!originalFn.test(body)) {
+		return body;
+	}
+
+	console.log('Removing dynamic URL...');
+
+	return body.replace(
+		originalFn,
+		`function getScriptURL(bundle) {
+    throw new Error('Cannot load dynamically from the browser extension');
+  }
+`,
 	);
 }
