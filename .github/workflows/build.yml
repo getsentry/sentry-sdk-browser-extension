@@ -102,7 +102,7 @@ jobs:
 
       - name: Submit to Google
         if: matrix.command == 'chrome'
-        run: npx chrome-webstore-upload-cli@2 upload --auto-publish --source extension/chrome.zip
+        run: npx chrome-webstore-upload-cli@3.4.0 --max-await-in-progress 300 --source extension/chrome.zip
         env:
           EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
           CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
