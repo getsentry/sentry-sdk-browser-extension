@@ -1,4 +1,4 @@
-import type { SdkInfo } from '@sentry/core';
+import { parseSemver, type SdkInfo } from '@sentry/core';
 import { isLoadingSignal, replaySignal, sdkInfoSignal } from '..';
 import { InjectReplay } from '../components/InjectReplay';
 import { OptionsTable } from '../components/OptionsTable';
@@ -38,14 +38,19 @@ function WithReplay(replay: ReplayData) {
 function WithoutReplay(sdkInfo: SdkInfo | undefined) {
 	const version = sdkInfo?.version;
 
+	const replayVersion = version && getSupportedReplayVersion(version);
+
 	return (
 		<div>
 			<p>Replay is not installed.</p>
 
 			<div>
 				{version ? (
-					isSupportedVersion(version) ? (
-						<InjectReplay sdkVersion={version} />
+					replayVersion ? (
+						<>
+							(replayVersion !== version ? <p>Using latest available version of replay: {replayVersion}</p> : null)
+							<InjectReplay sdkVersion={replayVersion} />
+						</>
 					) : (
 						<p>
 							Detected SDK version {version} is not compatible. Only v7.99.0 to v{getLatestSdkVersion()} are supported.
@@ -59,6 +64,24 @@ function WithoutReplay(sdkInfo: SdkInfo | undefined) {
 	);
 }
 
-function isSupportedVersion(version: string): boolean {
-	return getAvailableSdkVersions().includes(version);
+function getSupportedReplayVersion(version: string): string | undefined {
+	if (getAvailableSdkVersions().includes(version)) {
+		return version;
+	}
+
+	const latestVersion = getLatestSdkVersion();
+	const currentSemver = parseSemver(version);
+	const latestSemver = parseSemver(latestVersion);
+
+	// If the version is _newer_ than the latest version, we just assume it is supported and use the latest version instead.
+	if (
+		currentSemver &&
+		latestSemver &&
+		currentSemver.major === latestSemver.major &&
+		(currentSemver.minor || 0) >= (latestSemver.minor || 0)
+	) {
+		return latestVersion;
+	}
+
+	return undefined;
 }
